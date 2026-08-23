@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tableau de bord — Hub Digital</title>
+  <meta name="description" content="Tableau de bord Hub Digital : gérez vos tâches en temps réel, connecté à l'API FastAPI et à la base SQLite." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚀</text></svg>" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+
+  <style>
+    /* ==== Styles du tableau de bord (design system Hub Digital) ==== */
+    .dash-hero{padding:96px 0 40px;text-align:center;position:relative;overflow:hidden}
+    .dash-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 340px at 50% -10%,rgba(108,92,231,.28),transparent 70%);pointer-events:none}
+    .dash-hero .section-title{font-size:clamp(28px,4.5vw,44px)}
+    .dash-hero .section-desc{max-width:640px;margin:14px auto 0}
+
+    .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 22px}
+    @media(max-width:640px){.dash-stats{grid-template-columns:repeat(2,1fr)}}
+    .dash-stat{background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+               padding:18px;text-align:center;transition:transform .2s,border-color .2s}
+    .dash-stat:hover{transform:translateY(-3px);border-color:rgba(108,92,231,.5)}
+    .dash-stat .n{font-size:30px;font-weight:800;line-height:1}
+    .dash-stat .l{font-size:12px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+    .dash-stat.total .n{color:var(--accent)} .dash-stat.todo .n{color:var(--muted)}
+    .dash-stat.in_progress .n{color:var(--primary)} .dash-stat.done .n{color:var(--green)}
+
+    .dash-card{background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+               padding:22px;margin-bottom:22px;box-shadow:var(--shadow)}
+    .dash-card h2{font-size:17px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+    .dash-form{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:760px){.dash-form{grid-template-columns:1.3fr 1.8fr .8fr auto}}
+    .dash-form input,.dash-form select{background:var(--dark-3);border:1px solid rgba(255,255,255,.1);color:var(--text);
+        border-radius:var(--radius-sm);padding:12px 14px;font-family:var(--font);font-size:14px;outline:none;width:100%}
+    .dash-form input:focus,.dash-form select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.18)}
+    .dash-form input::placeholder{color:var(--muted)}
+
+    .dash-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .dash-chip{background:var(--dark-3);border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:8px 15px;
+        border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--font);transition:.15s}
+    .dash-chip:hover{color:var(--text);border-color:var(--accent)}
+    .dash-chip.active{background:rgba(108,92,231,.16);border-color:var(--accent);color:#c9c2ff}
+
+    .dash-list{display:flex;flex-direction:column;gap:10px}
+    .task{background:var(--dark-3);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius-sm);
+        padding:14px 16px;display:flex;align-items:center;gap:14px;transition:border-color .15s}
+    .task:hover{border-color:rgba(255,255,255,.18)}
+    .task .body{flex:1;min-width:0}
+    .task .title{font-weight:700;font-size:15px;word-break:break-word}
+    .task .desc{color:var(--muted);font-size:13px;margin-top:3px;word-break:break-word}
+    .task .meta{color:#6b7684;font-size:11px;margin-top:5px}
+    .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:4px 11px;
+        border-radius:999px;white-space:nowrap}
+    .badge.todo{background:rgba(154,167,180,.15);color:#9aa7b4}
+    .badge.in_progress{background:rgba(255,122,0,.15);color:var(--primary)}
+    .badge.done{background:rgba(46,204,113,.15);color:#5fe39a}
+    .actions{display:flex;gap:6px;align-items:center}
+    .icon-btn{background:var(--dark-2);border:1px solid rgba(255,255,255,.1);color:var(--muted);width:36px;height:36px;
+        border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s}
+    .icon-btn:hover{border-color:var(--accent);color:var(--text)}
+    .icon-btn.del:hover,.icon-btn.del.armed{border-color:var(--red);color:var(--red)}
+    .empty{text-align:center;color:var(--muted);padding:38px 10px;font-size:14px}
+    .empty .big{font-size:32px;margin-bottom:8px}
+
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+         background:var(--dark-3);border:1px solid var(--accent);color:var(--text);padding:12px 20px;border-radius:12px;
+         font-size:14px;transition:.3s;pointer-events:none;z-index:120;box-shadow:var(--shadow)}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    #toast.err{border-color:var(--red)}
+  </style>
+</head>
+<body>
+
+  <!-- ================= Navigation ================= -->
+  <header id="siteHeader">
+    <nav class="navbar container" aria-label="Navigation principale">
+      <a href="/" class="logo">
+        <span class="logo-badge">🚀</span>
+        Hub <span>Digital</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/#accueil" data-i18n="nav.home">Accueil</a></li>
+        <li><a href="/#services" data-i18n="nav.services">Services</a></li>
+        <li><a href="/#apropos" data-i18n="nav.about">À propos</a></li>
+        <li><a href="/#processus" data-i18n="nav.process">Processus</a></li>
+        <li><a href="/#projets" data-i18n="nav.projects">Projets</a></li>
+        <li><a href="/taches" class="active" data-i18n="nav.dashboard">Tableau de bord</a></li>
+        <li><a href="/#faq" data-i18n="nav.faq">FAQ</a></li>
+        <li><a href="https://qxcvjkbl.mychariow.market" class="nav-store" target="_blank" rel="noopener noreferrer" data-i18n="nav.store">Boutique</a></li>
+        <li><a href="/#contact" class="nav-cta" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <div class="lang-switch" role="group" aria-label="Langue / Language">
+          <button class="lang-btn" data-lang="fr" type="button" aria-label="Français">FR</button>
+          <button class="lang-btn" data-lang="en" type="button" aria-label="English">EN</button>
+          <button class="lang-btn" data-lang="ar" type="button" aria-label="العربية">ع</button>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= En-tête du tableau de bord ================= -->
+    <section class="dash-hero">
+      <div class="container">
+        <span class="section-tag" data-i18n="dash.badge">🛠️ Application connectée</span>
+        <h1 class="section-title" data-i18n="dash.title">Tableau de bord</h1>
+        <p class="section-desc" data-i18n="dash.sub">
+          Gérez vos tâches en temps réel, connecté à l'API FastAPI et à la base SQLite.
+        </p>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- ================= Statistiques ================= -->
+      <div class="dash-stats">
+        <div class="dash-stat total"><div class="n" id="st-total">–</div><div class="l" data-i18n="dash.statTotal">Total</div></div>
+        <div class="dash-stat todo"><div class="n" id="st-todo">–</div><div class="l" data-i18n="dash.statTodo">À faire</div></div>
+        <div class="dash-stat in_progress"><div class="n" id="st-prog">–</div><div class="l" data-i18n="dash.statInProgress">En cours</div></div>
+        <div class="dash-stat done"><div class="n" id="st-done">–</div><div class="l" data-i18n="dash.statDone">Terminées</div></div>
+      </div>
+
+      <!-- ================= Nouvelle tâche ================= -->
+      <div class="dash-card">
+        <h2 data-i18n="dash.addTitle">➕ Nouvelle tâche</h2>
+        <form class="dash-form" id="add-form">
+          <input id="f-title" data-i18n-ph="dash.titlePh" placeholder="Titre de la tâche" required>
+          <input id="f-desc" data-i18n-ph="dash.descPh" placeholder="Description (optionnel)">
+          <select id="f-status">
+            <option value="todo" data-i18n="status.todo">À faire</option>
+            <option value="in_progress" data-i18n="status.in_progress">En cours</option>
+            <option value="done" data-i18n="status.done">Terminée</option>
+          </select>
+          <button class="btn btn-primary" type="submit" data-i18n="dash.addBtn">Ajouter</button>
+        </form>
+      </div>
+
+      <!-- ================= Liste ================= -->
+      <div class="dash-card">
+        <h2 data-i18n="dash.listTitle">🗂️ Mes tâches</h2>
+        <div class="dash-filters" id="filters">
+          <button class="dash-chip active" data-f="all" data-i18n="dash.filterAll">Toutes</button>
+          <button class="dash-chip" data-f="todo" data-i18n="status.todo">À faire</button>
+          <button class="dash-chip" data-f="in_progress" data-i18n="status.in_progress">En cours</button>
+          <button class="dash-chip" data-f="done" data-i18n="status.done">Terminées</button>
+        </div>
+        <div class="dash-list" id="list"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <span class="logo-badge">🚀</span>
+            Hub <span>Digital</span>
+          </a>
+          <p data-i18n="footer.desc">
+            La vitrine numérique d’un projet innovant, connectant créativité et
+            technologie pour le marché africain et au-delà.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.nav">Navigation</h4>
+          <ul>
+            <li><a href="/#accueil" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="/#services" data-i18n="nav.services">Services</a></li>
+            <li><a href="/#apropos" data-i18n="nav.about">À propos</a></li>
+            <li><a href="/#projets" data-i18n="nav.projects">Projets</a></li>
+            <li><a href="/taches" data-i18n="nav.dashboard">Tableau de bord</a></li>
+            <li><a href="https://qxcvjkbl.mychariow.market" target="_blank" rel="noopener noreferrer" data-i18n="nav.store">Boutique</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@hubdigital.com">contact@hubdigital.com</a></li>
+            <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
+            <li><a href="/" data-i18n="backToTop">Haut de page</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Hub Digital — <span data-i18n="footer.rights">Tous droits réservés.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" type="button" aria-label="Haut de page">↑</button>
+  <div id="toast"></div>
+
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    var STATUS_FLOW = { todo: "in_progress", in_progress: "done", done: "todo" };
+    var currentFilter = "all";
+    var armedDelete = null;
+
+    var $ = function (s) { return document.querySelector(s); };
+    var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+    function lang() {
+      var l = (document.documentElement.lang || "fr").toLowerCase().split("-")[0];
+      return I18N[l] ? l : "fr";
+    }
+    function t(key) {
+      var l = lang();
+      if (I18N[l] && I18N[l][key] != null) return I18N[l][key];
+      if (I18N.fr && I18N.fr[key] != null) return I18N.fr[key];
+      return key;
+    }
+
+    function toast(msg, isErr) {
+      var el = $("#toast");
+      el.textContent = msg;
+      el.className = isErr ? "err show" : "show";
+      clearTimeout(el._h);
+      el._h = setTimeout(function () { el.className = ""; }, 2600);
+    }
+
+    function api(path, opts) {
+      opts = opts || {};
+      return fetch(path, Object.assign({ headers: { "Content-Type": "application/json" } }, opts))
+        .then(function (res) {
+          if (!res.ok) {
+            return res.json().catch(function () { return {}; }).then(function (j) {
+              var d = j.detail;
+              if (typeof d !== "string" && d != null) d = JSON.stringify(d);
+              throw new Error(d || ("Erreur " + res.status));
+            });
+          }
+          return res.json();
+        });
+    }
+
+    function esc(s) {
+      return (s == null ? "" : String(s)).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return "";
+      var d = new Date(String(iso).replace(" ", "T") + "Z");
+      if (isNaN(d.getTime())) return iso;
+      return d.toLocaleDateString(lang() === "ar" ? "ar" : "fr-FR", { day: "2-digit", month: "short" }) +
+             " " + d.toLocaleTimeString(lang() === "ar" ? "ar" : "fr-FR", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function loadStats() {
+      api("/stats").then(function (s) {
+        $("#st-total").textContent = s.total != null ? s.total : 0;
+        $("#st-todo").textContent = (s.by_status && s.by_status.todo) || 0;
+        $("#st-prog").textContent = (s.by_status && s.by_status.in_progress) || 0;
+        $("#st-done").textContent = (s.by_status && s.by_status.done) || 0;
+      }).catch(function () { /* non bloquant */ });
+    }
+
+    function renderList(tasks) {
+      var list = $("#list");
+      if (!tasks.length) {
+        list.innerHTML = '<div class="empty"><div class="big">📭</div>' + esc(t("dash.empty")) + "</div>";
+        return;
+      }
+      list.innerHTML = tasks.map(function (task) {
+        var armed = armedDelete === task.id;
+        return (
+          '<div class="task">' +
+            '<div class="body">' +
+              '<div class="title">' + esc(task.title) + "</div>" +
+              (task.description ? '<div class="desc">' + esc(task.description) + "</div>" : "") +
+              '<div class="meta">#' + task.id + " · " + esc(t("dash.created")) + " " + fmtDate(task.created_at) +
+                (task.updated_at !== task.created_at ? " · " + esc(t("dash.updated")) + " " + fmtDate(task.updated_at) : "") +
+              "</div>" +
+            "</div>" +
+            '<span class="badge ' + task.status + '">' + esc(t("status." + task.status)) + "</span>" +
+            '<div class="actions">' +
+              '<button class="icon-btn" title="' + esc(advanceHint(task.status)) + '" data-advance="' + task.id + '">➡️</button>' +
+              '<button class="icon-btn del' + (armed ? " armed" : "") + '" title="' + esc(t("dash.delete")) + '" data-del="' + task.id + '">' + (armed ? "✔" : "🗑") + "</button>" +
+            "</div>" +
+          "</div>"
+        );
+      }).join("");
+    }
+
+    function advanceHint(status) {
+      var nxt = STATUS_FLOW[status];
+      if (status === "todo") return t("dash.advanceTodo");
+      if (status === "in_progress") return t("dash.advanceInProgress");
+      return t("dash.advanceDone");
+    }
+
+    function loadTasks() {
+      var q = currentFilter === "all" ? "" : "?status=" + currentFilter;
+      api("/tasks" + q).then(function (data) {
+        renderList(data.tasks || []);
+      }).catch(function (e) {
+        $("#list").innerHTML = '<div class="empty">⚠️ ' + esc(e.message) + "</div>";
+      });
+      loadStats();
+    }
+
+    function addTask(e) {
+      e.preventDefault();
+      var title = $("#f-title").value.trim();
+      if (!title) return;
+      var body = {
+        title: title,
+        description: $("#f-desc").value.trim(),
+        status: $("#f-status").value
+      };
+      api("/tasks", { method: "POST", body: JSON.stringify(body) }).then(function () {
+        $("#add-form").reset();
+        toast(t("dash.toastAdded"));
+        loadTasks();
+      }).catch(function (err) { toast(err.message, true); });
+    }
+
+    function advance(id) {
+      api("/tasks/" + id, { method: "GET" }).then(function (task) {
+        var nxt = STATUS_FLOW[task.status] || "todo";
+        return api("/tasks/" + id, { method: "PUT", body: JSON.stringify({ status: nxt }) });
+      }).then(function () {
+        toast(t("dash.toastUpdated"));
+        loadTasks();
+      }).catch(function (err) { toast(err.message, true); });
+    }
+
+    function removeTask(id) {
+      if (armedDelete !== id) {
+        armedDelete = id;
+        loadTasks();
+        setTimeout(function () { if (armedDelete === id) { armedDelete = null; loadTasks(); } }, 3000);
+        return;
+      }
+      armedDelete = null;
+      api("/tasks/" + id, { method: "DELETE" }).then(function () {
+        toast(t("dash.toastDeleted"));
+        loadTasks();
+      }).catch(function (err) { toast(err.message, true); });
+    }
+
+    /* Délégation d'événements sur la liste */
+    $("#list").addEventListener("click", function (e) {
+      var adv = e.target.closest("[data-advance]");
+      var del = e.target.closest("[data-del]");
+      if (adv) advance(parseInt(adv.getAttribute("data-advance"), 10));
+      else if (del) removeTask(parseInt(del.getAttribute("data-del"), 10));
+    });
+
+    $("#add-form").addEventListener("submit", addTask);
+
+    $("#filters").addEventListener("click", function (e) {
+      var chip = e.target.closest(".dash-chip");
+      if (!chip) return;
+      currentFilter = chip.getAttribute("data-f");
+      $$(".dash-chip").forEach(function (c) { c.classList.remove("active"); });
+      chip.classList.add("active");
+      loadTasks();
+    });
+
+    /* Re-rendu après changement de langue (main.js applique déjà la langue) */
+    $$(".lang-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () { setTimeout(loadTasks, 0); });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      loadTasks();
+    });
+  })();
+  </script>
+</body>
+</html>

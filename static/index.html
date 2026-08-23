@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub Digital — Solutions digitales &amp; créativité</title>
+  <meta name="description" content="Hub Digital : branding, storytelling et solutions digitales pensés pour le marché africain et une audience internationale." />
+  <meta property="og:title" content="Hub Digital — Solutions digitales &amp; créativité" />
+  <meta property="og:description" content="Branding, storytelling et solutions digitales pour une audience locale et internationale." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚀</text></svg>" />
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <style>
+    /* ===== Section Boutique (produits Chariow) ===== */
+    .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+    @media(max-width:900px){.shop-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.shop-grid{grid-template-columns:1fr}}
+    .shop-card{background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+               overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s;text-align:left}
+    .shop-card:hover{transform:translateY(-5px);border-color:rgba(255,122,0,.45)}
+    .shop-card .thumb{aspect-ratio:4/3;background:var(--dark-3);position:relative;overflow:hidden}
+    .shop-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .shop-card .cat{position:absolute;top:10px;left:10px;background:rgba(13,17,23,.75);color:#ffd9b3;
+                     font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;backdrop-filter:blur(4px)}
+    .shop-card .info{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .shop-card .name{font-weight:700;font-size:15px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;
+                     -webkit-box-orient:vertical;overflow:hidden}
+    .shop-card .price{font-size:20px;font-weight:800;color:var(--primary)}
+    .shop-card .actions{margin-top:auto;display:flex;gap:8px}
+    .shop-card .actions .btn{flex:1;text-align:center;padding:10px 12px;font-size:13px}
+    .shop-note{text-align:center;color:var(--muted);font-size:13px;margin-top:16px}
+    .shop-note a{color:var(--primary);font-weight:600}
+  </style>
+  <link rel="stylesheet" href="chat.css" />
+</head>
+
+<body>
+<!-- Widget flottant IA -->
+<div id="chat-widget">
+  <div id="chat-header">💬 Hub Digital IA</div>
+  <div id="chat-window"></div>
+  <input id="chat-input" type="text" placeholder="Écrivez votre message..." />
+  <button onclick="sendMessage()">Envoyer</button>
+</div>
+
+  <!-- ================= Navigation ================= -->
+  <header id="siteHeader">
+    <nav class="navbar container" aria-label="Navigation principale">
+      <a href="#accueil" class="logo">
+        <span class="logo-badge">🚀</span>
+        Hub <span>Digital</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#accueil" data-i18n="nav.home">Accueil</a></li>
+        <li><a href="#services" data-i18n="nav.services">Services</a></li>
+        <li><a href="#apropos" data-i18n="nav.about">À propos</a></li>
+        <li><a href="#processus" data-i18n="nav.process">Processus</a></li>
+        <li><a href="#projets" data-i18n="nav.projects">Projets</a></li>
+        <li><a href="/taches" data-i18n="nav.dashboard">Tableau de bord</a></li>
+        <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+        <li><a href="#boutique" class="nav-store" data-i18n="nav.store">Boutique</a></li>
+        <li><a href="#contact" class="nav-cta" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <div class="lang-switch" role="group" aria-label="Langue / Language">
+          <button class="lang-btn" data-lang="fr" type="button" aria-label="Français">FR</button>
+          <button class="lang-btn" data-lang="en" type="button" aria-label="English">EN</button>
+          <button class="lang-btn" data-lang="ar" type="button" aria-label="العربية">ع</button>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ================= Hero ================= -->
+    <section class="hero" id="accueil">
+      <div class="container">
+        <span class="hero-badge" data-i18n="hero.badge">🌍 Pensé pour le marché africain</span>
+        <h1>
+          <span data-i18n="hero.title1">Créativité et technologie,</span><br />
+          <span data-i18n="hero.title2">au service de votre</span>
+          <span class="gradient-text" data-i18n="hero.titleAccent">vitrine digitale</span>
+        </h1>
+        <p data-i18n="hero.sub">
+          Hub Digital connecte branding, storytelling et solutions digitales pour
+          propulser votre marque auprès d’une audience locale et internationale.
+        </p>
+        <div class="hero-actions">
+          <a href="#services" class="btn btn-primary" data-i18n="hero.cta1">Découvrir nos services</a>
+          <a href="#boutique" class="btn btn-outline" data-i18n="hero.cta2">Visiter la boutique</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Statistiques ================= -->
+    <div class="stats">
+      <div class="container">
+        <div class="stats-grid reveal">
+          <div class="stat">
+            <strong class="stat-value" data-count="50">0</strong><span class="stat-suffix">+</span>
+            <span data-i18n="stats.s1">Projets accompagnés</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-value" data-count="15">0</strong><span class="stat-suffix">+</span>
+            <span data-i18n="stats.s2">Pays touchés</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-value" data-count="98">0</strong><span class="stat-suffix">%</span>
+            <span data-i18n="stats.s3">Clients satisfaits</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-value" data-count="24">0</strong><span class="stat-suffix">/7</span>
+            <span data-i18n="stats.s4">Accompagnement disponible</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Services ================= -->
+    <section class="services" id="services">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="services.tag">Nos services</span>
+          <h2 class="section-title" data-i18n="services.title">Ce que nous vous proposons</h2>
+          <p class="section-desc" data-i18n="services.desc">
+            Des solutions complètes, pensées pour révéler le potentiel de votre marque sur le digital.
+          </p>
+        </div>
+<div id="chatbox">
+  <input id="userInput" placeholder="Écrivez votre message...">
+  <button onclick="sendMessage()">Envoyer</button>
+  <div id="response"></div>
+</div>
+
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <div class="service-icon">🎨</div>
+            <h3 data-i18n="sv1.title">Branding &amp; Identité</h3>
+            <p data-i18n="sv1.desc">Logo, charte graphique et identité visuelle : construisons une marque forte, mémorable et cohérente.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">📖</div>
+            <h3 data-i18n="sv2.title">Storytelling</h3>
+            <p data-i18n="sv2.desc">Racontez l’histoire de votre marque avec des récits authentiques qui touchent votre audience et inspirent confiance.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">💻</div>
+            <h3 data-i18n="sv3.title">Solutions digitales</h3>
+            <p data-i18n="sv3.desc">Sites web, e-commerce et outils numériques performants, adaptés aux usages locaux comme internationaux.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">📈</div>
+            <h3 data-i18n="sv4.title">Stratégie de croissance</h3>
+            <p data-i18n="sv4.desc">Réseaux sociaux, référencement et campagnes : une stratégie claire pour développer votre visibilité en ligne.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">🛒</div>
+            <h3 data-i18n="sv5.title">E-commerce</h3>
+            <p data-i18n="sv5.desc">Boutiques en ligne sécurisées, avec paiements locaux et internationaux, pour vendre sans frontières.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">🎓</div>
+            <h3 data-i18n="sv6.title">Formation digitale</h3>
+            <p data-i18n="sv6.desc">Ateliers pratiques et accompagnement pour renforcer les compétences numériques de vos équipes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= À propos ================= -->
+    <section id="apropos">
+      <div class="container about-grid">
+        <div class="about-text reveal">
+          <span class="section-tag" data-i18n="about.tag">À propos</span>
+          <h2 class="section-title" data-i18n="about.title">Une vision moderne, enracinée en Afrique</h2>
+          <p data-i18n="about.p1">
+            Hub Digital est une vitrine numérique pensée pour connecter créativité et
+            technologie. Nous croyons en une identité moderne, adaptée au marché africain,
+            qui parle aussi bien à une audience locale qu’internationale.
+          </p>
+          <ul class="about-list">
+            <li><span class="check">✓</span><span data-i18n="about.li1">Une identité visuelle moderne et authentique</span></li>
+            <li><span class="check">✓</span><span data-i18n="about.li2">Des récits de marque ancrés dans les réalités africaines</span></li>
+            <li><span class="check">✓</span><span data-i18n="about.li3">Des solutions digitales accessibles à tous</span></li>
+            <li><span class="check">✓</span><span data-i18n="about.li4">Un accompagnement de bout en bout</span></li>
+          </ul>
+        </div>
+
+        <div class="about-visual reveal" aria-hidden="true">
+          <span class="emoji">🌍✨</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Processus ================= -->
+    <section class="process" id="processus">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="process.tag">Notre processus</span>
+          <h2 class="section-title" data-i18n="process.title">Comment nous travaillons</h2>
+          <p class="section-desc" data-i18n="process.desc">Une méthode simple et efficace, du premier échange au lancement final.</p>
+        </div>
+
+        <div class="steps">
+          <div class="step reveal">
+            <h3 data-i18n="ps1.title">Découverte</h3>
+            <p data-i18n="ps1.desc">Nous écoutons vos objectifs, votre audience et vos ambitions.</p>
+          </div>
+          <div class="step reveal">
+            <h3 data-i18n="ps2.title">Création</h3>
+            <p data-i18n="ps2.desc">Design, contenu et stratégie prennent vie de manière cohérente.</p>
+          </div>
+          <div class="step reveal">
+            <h3 data-i18n="ps3.title">Développement</h3>
+            <p data-i18n="ps3.desc">Vos solutions digitales sont construites sur mesure et optimisées.</p>
+          </div>
+          <div class="step reveal">
+            <h3 data-i18n="ps4.title">Lancement</h3>
+            <p data-i18n="ps4.desc">Mise en ligne et accompagnement pour assurer votre succès.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Projets ================= -->
+    <section id="projets">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="projects.tag">Nos projets</span>
+          <h2 class="section-title" data-i18n="projects.title">Quelques réalisations récentes</h2>
+          <p class="section-desc" data-i18n="projects.desc">Un aperçu de projets qui ont aidé des marques à franchir un cap.</p>
+        </div>
+
+        <div class="projects-grid">
+          <article class="project-card reveal">
+            <div class="project-thumb">👗</div>
+            <div class="project-body">
+              <span class="project-cat" data-i18n="pj1.cat">Branding</span>
+              <h3 data-i18n="pj1.title">Refonte d’identité — Dakar Fashion</h3>
+              <p data-i18n="pj1.desc">Nouvelle identité visuelle et direction artistique pour une maison de mode dakaroise.</p>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-thumb">🛍️</div>
+            <div class="project-body">
+              <span class="project-cat" data-i18n="pj2.cat">E-commerce</span>
+              <h3 data-i18n="pj2.title">Boutique en ligne — Teranga Market</h3>
+              <p data-i18n="pj2.desc">Plateforme e-commerce avec paiement mobile local pour les artisans sénégalais.</p>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-thumb">☕</div>
+            <div class="project-body">
+              <span class="project-cat" data-i18n="pj3.cat">Storytelling</span>
+              <h3 data-i18n="pj3.title">Campagne de marque — Baobab Coffee</h3>
+              <p data-i18n="pj3.desc">Un récit de marque et des contenus qui ont doublé l’engagement sur les réseaux.</p>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-thumb">📱</div>
+            <div class="project-body">
+              <span class="project-cat" data-i18n="pj4.cat">Digital</span>
+              <h3 data-i18n="pj4.title">Application — SenPay</h3>
+              <p data-i18n="pj4.desc">Design et accompagnement d’une solution de paiement pensée pour le mobile.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Boutique ================= -->
+    <section class="services" id="boutique">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="shop.tag">Boutique officielle</span>
+          <h2 class="section-title" data-i18n="shop.title">Nos produits</h2>
+          <p class="section-desc" data-i18n="shop.desc">
+            Retrouvez nos produits et ressources digitales, directement sur notre boutique Chariow.
+          </p>
+        </div>
+        <div class="shop-grid" id="shop-products"></div>
+        <p class="shop-note">
+          <span data-i18n="shop.secure">Paiement sécurisé via Chariow</span> ·
+          <a href="https://qxcvjkbl.mychariow.market" target="_blank" rel="noopener noreferrer" data-i18n="shop.viewAll">Voir toute la boutique</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= Témoignages ================= -->
+    <section class="testimonials" id="temoignages">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="testimonials.tag">Témoignages</span>
+          <h2 class="section-title" data-i18n="testimonials.title">Ils nous font confiance</h2>
+          <p class="section-desc" data-i18n="testimonials.desc">La satisfaction de nos clients est notre meilleure vitrine.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          <article class="testimonial reveal">
+            <div class="testimonial-stars" aria-hidden="true">★★★★★</div>
+            <blockquote data-i18n="ts1.quote">Hub Digital a transformé notre image. Notre marque est enfin reconnue à sa juste valeur, au Sénégal comme à l’international.</blockquote>
+            <div class="testimonial-author">
+              <span class="testimonial-avatar">AD</span>
+              <div>
+                <strong data-i18n="ts1.name">Awa Diallo</strong>
+                <span data-i18n="ts1.role">Fondatrice, Dakar Fashion</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial reveal">
+            <div class="testimonial-stars" aria-hidden="true">★★★★★</div>
+            <blockquote data-i18n="ts2.quote">Une équipe à l’écoute, créative et professionnelle. Le site est magnifique et nos ventes ont décollé.</blockquote>
+            <div class="testimonial-author">
+              <span class="testimonial-avatar">MT</span>
+              <div>
+                <strong data-i18n="ts2.name">Moussa Traoré</strong>
+                <span data-i18n="ts2.role">CEO, Baobab Coffee</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial reveal">
+            <div class="testimonial-stars" aria-hidden="true">★★★★★</div>
+            <blockquote data-i18n="ts3.quote">Ils comprennent vraiment le marché africain. Un vrai partenariat, du début à la fin.</blockquote>
+            <div class="testimonial-author">
+              <span class="testimonial-avatar">FN</span>
+              <div>
+                <strong data-i18n="ts3.name">Fatou Ndiaye</strong>
+                <span data-i18n="ts3.role">Directrice marketing, Teranga Market</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="faq.tag">FAQ</span>
+          <h2 class="section-title" data-i18n="faq.title">Questions fréquentes</h2>
+          <p class="section-desc" data-i18n="faq.desc">Tout ce que vous devez savoir avant de vous lancer.</p>
+        </div>
+
+        <div class="faq-list reveal">
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">
+              <span data-i18n="fq1.q">Combien de temps faut-il pour créer un site web ?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              <p data-i18n="fq1.a">En moyenne 2 à 6 semaines selon la complexité du projet. Nous vous communiquons un calendrier précis dès le premier échange.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">
+              <span data-i18n="fq2.q">Proposez-vous un accompagnement après la mise en ligne ?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              <p data-i18n="fq2.a">Oui. Nous assurons la maintenance, les mises à jour et le suivi de performance pour garantir votre succès sur le long terme.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">
+              <span data-i18n="fq3.q">Travaillez-vous avec des clients hors d’Afrique ?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              <p data-i18n="fq3.a">Absolument. Nos solutions sont pensées pour une audience locale et internationale, et nous travaillons à distance avec des clients partout dans le monde.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">
+              <span data-i18n="fq4.q">Quels sont vos tarifs ?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              <p data-i18n="fq4.a">Chaque projet est unique. Nous établissons un devis transparent et adapté à vos besoins après un premier échange gratuit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Contact ================= -->
+    <section class="services" id="contact">
+      <div class="container">
+        <div class="center reveal">
+          <span class="section-tag" data-i18n="contact.tag">Contact</span>
+          <h2 class="section-title" data-i18n="contact.title">Parlons de votre projet</h2>
+          <p class="section-desc" data-i18n="contact.desc">Remplissez le formulaire et nous vous répondrons sous 24h. Votre projet mérite une présence digitale à la hauteur de ses ambitions.</p>
+        </div>
+
+        <div class="contact-grid">
+          <form class="contact-form reveal" id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name" data-i18n="contact.name">Votre nom</label>
+                <input type="text" id="name" name="name" required data-i18n-ph="contact.name" />
+              </div>
+              <div class="form-group">
+                <label for="email" data-i18n="contact.email">Votre adresse e-mail</label>
+                <input type="email" id="email" name="email" required data-i18n-ph="contact.email" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="subject" data-i18n="contact.subject">Sujet</label>
+              <input type="text" id="subject" name="subject" data-i18n-ph="contact.subject" />
+            </div>
+            <div class="form-group">
+              <label for="message" data-i18n="contact.msg">Votre message</label>
+              <textarea id="message" name="message" rows="5" required data-i18n-ph="contact.msg"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" data-i18n="contact.submit">Envoyer le message</button>
+            <p class="form-success" id="formSuccess" hidden data-i18n="contact.success">Merci ! Votre message a bien été enregistré. Nous vous répondrons très vite. ✨</p>
+          </form>
+
+          <aside class="contact-info reveal">
+            <h3 data-i18n="contact.infoTitle">Coordonnées</h3>
+            <ul>
+              <li>
+                <span class="ci-icon">✉️</span>
+                <div>
+                  <strong data-i18n="contact.emailLabel">E-mail</strong>
+                  <a href="mailto:contact@hubdigital.com" data-i18n="contact.emailValue">contact@hubdigital.com</a>
+                </div>
+              </li>
+              <li>
+                <span class="ci-icon">📍</span>
+                <div>
+                  <strong data-i18n="contact.locLabel">Localisation</strong>
+                  <span data-i18n="contact.locValue">Dakar, Sénégal</span>
+                </div>
+              </li>
+              <li>
+                <span class="ci-icon">🕘</span>
+                <div>
+                  <strong data-i18n="contact.hoursLabel">Disponibilité</strong>
+                  <span data-i18n="contact.hoursValue">Lun – Ven, 9h – 18h</span>
+                </div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box reveal">
+          <h2 data-i18n="cta.title">Prêt·e à lancer votre projet ?</h2>
+          <p data-i18n="cta.sub">Discutons de votre vision. Ensemble, nous construirons une présence digitale qui vous ressemble.</p>
+          <div class="cta-actions">
+            <a href="#boutique" class="btn btn-light" data-i18n="cta.btn">Visiter la boutique</a>
+            <a href="#contact" class="btn btn-cta-outline" data-i18n="cta.contact">Contactez-nous</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#accueil" class="logo">
+            <span class="logo-badge">🚀</span>
+            Hub <span>Digital</span>
+          </a><body>
+  <h1>Bienvenue sur Hub Digital</h1>
+  <p>Découvrez nos solutions digitales et notre boutique officielle.</p>
+
+  <a href="https://qxcvjkbl.mychariow.market" target="_blank" class="btn-boutique">
+    🛍️ Visiter ma boutique Chariow
+  </a>
+</body>
+
+          <p data-i18n="footer.desc">
+            La vitrine numérique d’un projet innovant, connectant créativité et
+            technologie pour le marché africain et au-delà.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.nav">Navigation</h4>
+          <ul>
+            <li><a href="#accueil" data-i18n="nav.home">Accueil</a></li>
+            <li><a href="#services" data-i18n="nav.services">Services</a></li>
+            <li><a href="#apropos" data-i18n="nav.about">À propos</a></li>
+            <li><a href="#projets" data-i18n="nav.projects">Projets</a></li>
+            <li><a href="/taches" data-i18n="nav.dashboard">Tableau de bord</a></li>
+            <li><a href="#boutique" data-i18n="nav.store">Boutique</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@hubdigital.com">contact@hubdigital.com</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+            <li><a href="#accueil" data-i18n="backToTop">Haut de page</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Hub Digital — <span data-i18n="footer.rights">Tous droits réservés.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" type="button" aria-label="Haut de page">↑</button>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="chat.js"></script>
+  <script>
+  /* ===== Boutique Chariow — chargement des produits ===== */
+  (function () {
+    "use strict";
+
+    var box = document.getElementById("shop-products");
+    if (!box) return;
+
+    function lang() {
+      var l = (document.documentElement.lang || "fr").toLowerCase().split("-")[0];
+      return I18N[l] ? l : "fr";
+    }
+    function t(key) {
+      var l = lang();
+      if (I18N[l] && I18N[l][key] != null) return I18N[l][key];
+      if (I18N.fr && I18N.fr[key] != null) return I18N.fr[key];
+      return key;
+    }
+    function esc(s) {
+      return (s == null ? "" : String(s)).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function placeholder(msg) {
+      box.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 10px;font-size:14px">' + msg + "</div>";
+    }
+
+    function render(products) {
+      if (!products.length) {
+        placeholder(esc(t("shop.empty")));
+        return;
+      }
+      box.innerHTML = products.map(function (p) {
+        var price = p.is_free ? esc(t("shop.free")) : esc(p.price || "");
+        var img = p.thumbnail
+          ? '<img src="' + esc(p.thumbnail) + '" alt="' + esc(p.name) + '" loading="lazy" onerror="this.parentNode.style.background=\'linear-gradient(135deg,#1d242e,#161b22)\';this.style.display=\'none\'">'
+          : "";
+        return (
+          '<a class="shop-card" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer">' +
+            '<div class="thumb">' + img +
+              (p.category ? '<span class="cat">' + esc(p.category) + "</span>" : "") +
+            "</div>" +
+            '<div class="info">' +
+              '<div class="name">' + esc(p.name) + "</div>" +
+              '<div class="price">' + price + "</div>" +
+              '<div class="actions"><span class="btn btn-primary">' + esc(t("shop.buy")) + "</span></div>" +
+            "</div>" +
+          "</a>"
+        );
+      }).join("");
+    }
+
+    function load() {
+      placeholder(esc(t("shop.loading")));
+      fetch("/boutique/produits")
+        .then(function (r) { return r.json(); })
+        .then(function (d) { render(d.products || []); })
+        .catch(function () { placeholder("⚠️ " + esc(t("shop.error"))); });
+    }
+
+    document.addEventListener("DOMContentLoaded", load);
+    document.querySelectorAll(".lang-btn").forEach(function (b) {
+      b.addEventListener("click", function () { setTimeout(load, 0); });
+    });
+  })();
+  </script>
+</body>
+</html>
