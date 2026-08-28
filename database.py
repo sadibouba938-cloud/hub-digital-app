@@ -31,3 +31,63 @@ def init_db() -> None:
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS leads (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                name        TEXT    NOT NULL DEFAULT '',
+                email       TEXT    NOT NULL DEFAULT '',
+                phone       TEXT    NOT NULL DEFAULT '',
+                source      TEXT    NOT NULL DEFAULT 'manual',
+                status      TEXT    NOT NULL DEFAULT 'new',
+                notes       TEXT    NOT NULL DEFAULT '',
+                meta_id     TEXT,
+                created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS orders (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                chariow_sale_id TEXT,
+                customer_email  TEXT    NOT NULL DEFAULT '',
+                customer_name   TEXT    NOT NULL DEFAULT '',
+                product_name    TEXT    NOT NULL DEFAULT '',
+                amount          TEXT    NOT NULL DEFAULT '',
+                status          TEXT    NOT NULL DEFAULT 'pending',
+                access_granted  INTEGER NOT NULL DEFAULT 0,
+                raw_json        TEXT    NOT NULL DEFAULT '',
+                created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
+                updated_at      TEXT    NOT NULL DEFAULT (datetime('now'))
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS campaigns (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                name             TEXT    NOT NULL,
+                objective        TEXT    NOT NULL DEFAULT 'OUTCOME_TRAFFIC',
+                daily_budget     INTEGER NOT NULL DEFAULT 500,
+                status           TEXT    NOT NULL DEFAULT 'draft',
+                meta_campaign_id TEXT,
+                message          TEXT    NOT NULL DEFAULT '',
+                created_at       TEXT    NOT NULL DEFAULT (datetime('now'))
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS conversations (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                channel     TEXT    NOT NULL DEFAULT 'web',
+                external_id TEXT,
+                author      TEXT    NOT NULL DEFAULT '',
+                inbound     TEXT    NOT NULL DEFAULT '',
+                outbound    TEXT    NOT NULL DEFAULT '',
+                sent        INTEGER NOT NULL DEFAULT 0,
+                created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+            )
+            """
+        )

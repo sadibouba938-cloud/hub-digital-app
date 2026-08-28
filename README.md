@@ -62,10 +62,26 @@ ont besoin du backend Python (Options A ou B).
 |---|---|
 | `/` | Site vitrine Hub Digital |
 | `/taches` | Tableau de bord (tâches + base SQLite) |
+| `/agent` | Agent Meta + Chariow (prospects, pubs, commandes) |
+| `/webhooks/meta` | Webhook officiel Graph (leads + Messenger) |
+| `/webhooks/chariow` | Pulse Chariow `sale.completed` |
 | `/boutique/produits` | Produits Chariow (proxy API) |
 | `/api/chat` | Chat « Hub Digital IA » |
 | `/health` | État du serveur |
 | `/docs` | Documentation API (Swagger) |
+
+---
+
+## Variables Railway (Variables → Raw Editor)
+
+```
+FRONTEND_URL=https://hub-digital-appt-production.up.railway.app
+DEBUG_MODE=false
+ARENA_API_KEY=ak_live_xxx
+OPENAI_API_KEY=sk-xxx
+```
+
+`ta_cle_arena_ai` / `ta_cle_openai` sont des **exemples** : remplace-les par tes vraies clés. Ne les commite pas.
 
 ---
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Hub Digital — Meta + Chariow</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🤖</text></svg>" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    .dash-hero{padding:96px 0 32px;text-align:center;position:relative;overflow:hidden}
+    .dash-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 340px at 50% -10%,rgba(108,92,231,.28),transparent 70%);pointer-events:none}
+    .dash-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0 0 22px}
+    @media(max-width:900px){.dash-stats{grid-template-columns:repeat(2,1fr)}}
+    .dash-stat{background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:16px;text-align:center}
+    .dash-stat .n{font-size:26px;font-weight:800}
+    .dash-stat .l{font-size:11px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+    .dash-card{background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;margin-bottom:18px}
+    .dash-card h2{font-size:16px;margin-bottom:12px}
+    .pill{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;margin-right:6px}
+    .on{background:rgba(46,204,113,.15);color:#5fe39a}
+    .off{background:rgba(255,122,0,.15);color:#ffb36b}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+    input,select,textarea{width:100%;background:var(--dark-3);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;padding:10px 12px;font-family:inherit}
+    textarea{min-height:72px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{text-align:left;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+    .hint{color:var(--muted);font-size:13px;line-height:1.5}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark-3);border:1px solid var(--accent);padding:10px 16px;border-radius:12px;opacity:0;transition:.3s;z-index:20}
+    #toast.show{opacity:1}
+  </style>
+</head>
+<body>
+  <header id="siteHeader">
+    <nav class="navbar container">
+      <a href="/" class="logo"><span class="logo-badge">🚀</span> Hub <span>Digital</span></a>
+      <ul class="nav-links">
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/taches">Tâches</a></li>
+        <li><a href="/agent" class="active">Agent</a></li>
+        <li><a href="https://qxcvjkbl.mychariow.market" target="_blank" rel="noopener">Boutique</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dash-hero">
+      <div class="container">
+        <span class="section-tag">🤖 Agent métier</span>
+        <h1 class="section-title">Meta + Chariow + site</h1>
+        <p class="section-desc">Prospects, campagnes (API officielle), messages, validation des produits digitaux et mise à jour du site.</p>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="dash-stats">
+        <div class="dash-stat"><div class="n" id="c-leads">–</div><div class="l">Prospects</div></div>
+        <div class="dash-stat"><div class="n" id="c-orders">–</div><div class="l">Commandes</div></div>
+        <div class="dash-stat"><div class="n" id="c-access">–</div><div class="l">Accès validés</div></div>
+        <div class="dash-stat"><div class="n" id="c-ads">–</div><div class="l">Campagnes</div></div>
+        <div class="dash-stat"><div class="n" id="c-inbox">–</div><div class="l">Messages</div></div>
+      </div>
+
+      <div class="dash-card">
+        <h2>Connexions</h2>
+        <p id="conn" class="hint">Chargement…</p>
+      </div>
+
+      <div class="grid2">
+        <div class="dash-card">
+          <h2>➕ Prospect</h2>
+          <label>Nom</label><input id="l-name" />
+          <label>Email</label><input id="l-email" type="email" />
+          <label>Téléphone</label><input id="l-phone" />
+          <label>Source</label>
+          <select id="l-source">
+            <option value="manual">Manuel</option>
+            <option value="meta_lead_ad">Lead Ad Meta</option>
+            <option value="messenger">Messenger</option>
+            <option value="site">Site</option>
+          </select>
+          <p><button class="btn btn-primary" type="button" id="btn-lead">Enregistrer</button></p>
+        </div>
+        <div class="dash-card">
+          <h2>📣 Campagne Meta</h2>
+          <p class="hint">Sans token : brouillon. Avec token : créée en <b>PAUSED</b> sur Ads Manager (jamais lancée toute seule).</p>
+          <label>Nom</label><input id="ad-name" placeholder="Trafic boutique août" />
+          <label>Objectif</label>
+          <select id="ad-obj">
+            <option value="OUTCOME_TRAFFIC">Trafic site / boutique</option>
+            <option value="OUTCOME_LEADS">Prospects</option>
+            <option value="OUTCOME_ENGAGEMENT">Engagement</option>
+            <option value="OUTCOME_SALES">Ventes</option>
+          </select>
+          <label>Budget quotidien (unité compte pub)</label><input id="ad-budget" type="number" value="5000" />
+          <p>
+            <button class="btn" type="button" id="btn-draft">Brouillon</button>
+            <button class="btn btn-primary" type="button" id="btn-pub">Créer sur Meta (pause)</button>
+          </p>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="dash-card">
+          <h2>✅ Valider une commande digitale</h2>
+          <label>ID vente Chariow (optionnel)</label><input id="o-sale" placeholder="sale_…" />
+          <label>Email client</label><input id="o-email" type="email" />
+          <label>Nom</label><input id="o-name" />
+          <label>Produit</label><input id="o-product" placeholder="StartPack Digital" />
+          <label>Montant</label><input id="o-amount" />
+          <p><button class="btn btn-primary" type="button" id="btn-order">Valider + mettre à jour le site</button></p>
+        </div>
+        <div class="dash-card">
+          <h2>💬 Réponse client</h2>
+          <label>Message reçu</label>
+          <textarea id="m-in" placeholder="Bonjour, j'ai payé mais pas reçu l'accès…"></textarea>
+          <label>PSID Messenger (si envoi réel)</label><input id="m-psid" />
+          <p>
+            <button class="btn" type="button" id="btn-suggest">Générer la réponse</button>
+            <button class="btn btn-primary" type="button" id="btn-send">Envoyer via Meta</button>
+          </p>
+          <p class="hint" id="m-out"></p>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <h2>Prospects</h2>
+        <div id="tbl-leads"></div>
+      </div>
+      <div class="dash-card">
+        <h2>Commandes & accès site</h2>
+        <div id="tbl-orders"></div>
+      </div>
+      <div class="dash-card">
+        <h2>Campagnes</h2>
+        <div id="tbl-ads"></div>
+      </div>
+    </div>
+  </main>
+  <div id="toast"></div>
+  <script>
+  (function () {
+    function toast(m) {
+      var el = document.getElementById("toast");
+      el.textContent = m; el.className = "show";
+      setTimeout(function () { el.className = ""; }, 2400);
+    }
+    function api(path, opts) {
+      return fetch(path, Object.assign({ headers: { "Content-Type": "application/json" } }, opts || {}))
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.detail || r.status); return j; }); });
+    }
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>\"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
+    function table(cols, rows, map) {
+      if (!rows.length) return "<p class='hint'>Aucune donnée.</p>";
+      return "<table><thead><tr>" + cols.map(function (c) { return "<th>" + c + "</th>"; }).join("") +
+        "</tr></thead><tbody>" + rows.map(map).join("") + "</tbody></table>";
+    }
+    function load() {
+      api("/api/agent/status").then(function (s) {
+        document.getElementById("c-leads").textContent = s.counts.leads;
+        document.getElementById("c-orders").textContent = s.counts.orders;
+        document.getElementById("c-access").textContent = s.counts.access_granted;
+        document.getElementById("c-ads").textContent = s.counts.campaigns;
+        document.getElementById("c-inbox").textContent = s.counts.conversations;
+        var m = s.meta.connected ? "<span class='pill on'>Meta connecté</span>" : "<span class='pill off'>Meta sandbox</span>";
+        var c = s.chariow.connected ? "<span class='pill on'>Chariow API</span>" : "<span class='pill off'>Chariow vitrine seule</span>";
+        document.getElementById("conn").innerHTML = m + c +
+          "<br>" + esc(s.meta.hint || "Marketing API prête.") + "<br>" + esc(s.chariow.hint || "Pulse / ventes OK.") +
+          "<br>Webhook Meta : <code>/webhooks/meta</code> · Pulse Chariow : <code>/webhooks/chariow</code>";
+      });
+      api("/api/agent/leads").then(function (d) {
+        document.getElementById("tbl-leads").innerHTML = table(
+          ["Nom", "Email", "Tél", "Source", "Statut"],
+          d.leads,
+          function (r) {
+            return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.email) + "</td><td>" + esc(r.phone) +
+              "</td><td>" + esc(r.source) + "</td><td>" + esc(r.status) + "</td></tr>";
+          }
+        );
+      });
+      api("/api/agent/orders").then(function (d) {
+        document.getElementById("tbl-orders").innerHTML = table(
+          ["Client", "Produit", "Montant", "Statut", "Accès site"],
+          d.orders,
+          function (r) {
+            return "<tr><td>" + esc(r.customer_name) + "<br><small>" + esc(r.customer_email) +
+              "</small></td><td>" + esc(r.product_name) + "</td><td>" + esc(r.amount) +
+              "</td><td>" + esc(r.status) + "</td><td>" + (r.access_granted ? "oui" : "non") + "</td></tr>";
+          }
+        );
+      });
+      api("/api/agent/campaigns").then(function (d) {
+        document.getElementById("tbl-ads").innerHTML = table(
+          ["Nom", "Objectif", "Budget", "Statut", "Meta ID"],
+          d.campaigns,
+          function (r) {
+            return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.objective) + "</td><td>" +
+              esc(r.daily_budget) + "</td><td>" + esc(r.status) + "</td><td>" + esc(r.meta_campaign_id || "—") + "</td></tr>";
+          }
+        );
+      });
+    }
+    document.getElementById("btn-lead").onclick = function () {
+      api("/api/agent/leads", { method: "POST", body: JSON.stringify({
+        name: document.getElementById("l-name").value,
+        email: document.getElementById("l-email").value,
+        phone: document.getElementById("l-phone").value,
+        source: document.getElementById("l-source").value
+      })}).then(function () { toast("Prospect enregistré"); load(); });
+    };
+    function campaign(publish) {
+      api("/api/agent/campaigns", { method: "POST", body: JSON.stringify({
+        name: document.getElementById("ad-name").value || "Campagne Hub Digital",
+        objective: document.getElementById("ad-obj").value,
+        daily_budget_xof: Number(document.getElementById("ad-budget").value || 5000),
+        publish: publish
+      })}).then(function (r) { toast(r.message || "OK"); load(); }).catch(function (e) { toast(e.message); });
+    }
+    document.getElementById("btn-draft").onclick = function () { campaign(false); };
+    document.getElementById("btn-pub").onclick = function () { campaign(true); };
+    document.getElementById("btn-order").onclick = function () {
+      api("/api/agent/orders/validate", { method: "POST", body: JSON.stringify({
+        chariow_sale_id: document.getElementById("o-sale").value,
+        customer_email: document.getElementById("o-email").value,
+        customer_name: document.getElementById("o-name").value,
+        product_name: document.getElementById("o-product").value,
+        amount: document.getElementById("o-amount").value,
+        grant_access: true
+      })}).then(function () { toast("Commande validée — site mis à jour"); load(); });
+    };
+    document.getElementById("btn-suggest").onclick = function () {
+      api("/api/agent/inbox", { method: "POST", body: JSON.stringify({
+        inbound: document.getElementById("m-in").value, send: false
+      })}).then(function (r) {
+        document.getElementById("m-out").textContent = r.conversation.outbound;
+        toast("Réponse générée"); load();
+      });
+    };
+    document.getElementById("btn-send").onclick = function () {
+      api("/api/agent/inbox", { method: "POST", body: JSON.stringify({
+        inbound: document.getElementById("m-in").value,
+        external_id: document.getElementById("m-psid").value,
+        send: true
+      })}).then(function (r) {
+        document.getElementById("m-out").textContent = r.conversation.outbound;
+        toast(r.conversation.sent ? "Envoyé via Meta" : "Non envoyé (pas de token)");
+        load();
+      });
+    };
+    load();
+  })();
+  </script>
+</body>
+</html>
