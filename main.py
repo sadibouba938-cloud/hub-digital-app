@@ -8,11 +8,15 @@ import time as _time
 import urllib.request
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import database as db
+import agent as hd_agent
+import settings
+import llm as hd_llm
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -40,7 +44,14 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Agent Arena Backend + DB", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="Agent Arena Backend + DB", version="2.1.0", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins(),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ---------- Modèles ----------
@@ -65,6 +76,38 @@ class ChatPayload(BaseModel):
     message: str
 
 
+class LeadCreate(BaseModel):
+    name: str = ""
+    email: str = ""
+    phone: str = ""
+    source: str = "manual"
+    notes: str = ""
+
+
+class CampaignCreate(BaseModel):
+    name: str
+    objective: str = "OUTCOME_TRAFFIC"
+    daily_budget_xof: int = 5000
+    publish: bool = False
+
+
+class OrderValidate(BaseModel):
+    chariow_sale_id: Optional[str] = None
+    customer_email: str = ""
+    customer_name: str = ""
+    product_name: str = ""
+    amount: str = ""
+    grant_access: bool = True
+
+
+class InboxReply(BaseModel):
+    channel: str = "messenger"
+    external_id: str = ""
+    author: str = ""
+    inbound: str
+    send: bool = False
+
+
 # ---------- Site vitrine Hub Digital (fusionné) ----------
 app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
 
@@ -77,6 +120,11 @@ def home():
 @app.get("/taches", response_class=HTMLResponse)
 def dashboard_page():
     return (STATIC_DIR / "taches.html").read_text(encoding="utf-8")
+
+
+@app.get("/agent", response_class=HTMLResponse)
+def agent_page():
+    return (STATIC_DIR / "agent.html").read_text(encoding="utf-8")
 
 
 @app.get("/chat.css", response_class=FileResponse)
@@ -92,7 +140,15 @@ def chat_js():
 # ---------- Santé / infos ----------
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "agent-arena-backend", "db": "sqlite", "time": datetime.now(timezone.utc).isoformat()}
+    return {
+        "status": "ok",
+        "service": "agent-arena-backend",
+        "db": "sqlite",
+        "time": datetime.now(timezone.utc).isoformat(),
+        "frontend_url": settings.FRONTEND_URL,
+        "debug": settings.DEBUG_MODE,
+        "llm": {"arena": settings.ARENA_READY, "openai": settings.OPENAI_READY},
+    }
 
 
 @app.get("/api/time")
@@ -363,4 +419,269 @@ def chat(payload: ChatPayload):
 
     # 2) Sinon, assistant local (toujours disponible)
     return {"reply": _local_chat_reply(message), "source": "local"}
+
+
+# ---------- Agent Meta + Chariow + CRM ----------
+@app.get("/api/agent/status")
+def agent_status():
+    conn = db.get_conn()
+    leads = conn.execute("SELECT COUNT(*) AS n FROM leads").fetchone()["n"]
+    orders = conn.execute("SELECT COUNT(*) AS n FROM orders").fetchone()["n"]
+    granted = conn.execute("SELECT COUNT(*) AS n FROM orders WHERE access_granted = 1").fetchone()["n"]
+    campaigns = conn.execute("SELECT COUNT(*) AS n FROM campaigns").fetchone()["n"]
+    inbox = conn.execute("SELECT COUNT(*) AS n FROM conversations").fetchone()["n"]
+    status = hd_agent.connection_status()
+    status["counts"] = {
+        "leads": leads,
+        "orders": orders,
+        "access_granted": granted,
+        "campaigns": campaigns,
+        "conversations": inbox,
+    }
+    status["app"] = settings.public_config()
+    return status
+
+
+@app.get("/api/agent/leads")
+def agent_leads():
+    conn = db.get_conn()
+    rows = conn.execute("SELECT * FROM leads ORDER BY id DESC LIMIT 200").fetchall()
+    return {"count": len(rows), "leads": [dict(r) for r in rows]}
+
+
+@app.post("/api/agent/leads", status_code=201)
+def agent_create_lead(lead: LeadCreate):
+    conn = db.get_conn()
+    cur = conn.execute(
+        "INSERT INTO leads (name, email, phone, source, notes) VALUES (?, ?, ?, ?, ?)",
+        (lead.name, lead.email, lead.phone, lead.source, lead.notes),
+    )
+    conn.commit()
+    row = conn.execute("SELECT * FROM leads WHERE id = ?", (cur.lastrowid,)).fetchone()
+    return dict(row)
+
+
+@app.get("/api/agent/orders")
+def agent_orders():
+    conn = db.get_conn()
+    rows = conn.execute("SELECT * FROM orders ORDER BY id DESC LIMIT 200").fetchall()
+    return {"count": len(rows), "orders": [dict(r) for r in rows]}
+
+
+@app.post("/api/agent/orders/validate")
+def agent_validate_order(payload: OrderValidate):
+    verified = None
+    status = "pending"
+    if payload.chariow_sale_id and hd_agent.env("CHARIOW_API_KEY"):
+        try:
+            verified = hd_agent.chariow_verify_sale(payload.chariow_sale_id)
+            status = "paid" if verified.get("ok") else (verified.get("status") or "pending")
+        except Exception as exc:  # noqa: BLE001
+            verified = {"ok": False, "error": str(exc)}
+            status = "error"
+    elif payload.grant_access:
+        status = "paid"
+
+    access = 1 if status == "paid" and payload.grant_access else 0
+    conn = db.get_conn()
+    cur = conn.execute(
+        """
+        INSERT INTO orders (chariow_sale_id, customer_email, customer_name, product_name, amount, status, access_granted, raw_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            payload.chariow_sale_id or "",
+            payload.customer_email,
+            payload.customer_name,
+            payload.product_name,
+            payload.amount,
+            status,
+            access,
+            _json.dumps(verified or {}, ensure_ascii=False),
+        ),
+    )
+    conn.commit()
+    row = conn.execute("SELECT * FROM orders WHERE id = ?", (cur.lastrowid,)).fetchone()
+    return {"order": dict(row), "site_updated": bool(access), "chariow": verified}
+
+
+@app.post("/webhooks/chariow")
+async def chariow_pulse(request: Request):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    event = body.get("event") or body.get("type") or ""
+    data = body.get("data") or body
+    customer = data.get("customer") or {}
+    product = data.get("product") or {}
+    sale_id = str(data.get("id") or data.get("sale_id") or "")
+    completed = "sale.completed" in str(event).lower() or str(data.get("status") or "").lower() in (
+        "completed",
+        "paid",
+    )
+    conn = db.get_conn()
+    conn.execute(
+        """
+        INSERT INTO orders (chariow_sale_id, customer_email, customer_name, product_name, amount, status, access_granted, raw_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            sale_id,
+            customer.get("email") or "",
+            f"{customer.get('first_name') or ''} {customer.get('last_name') or ''}".strip(),
+            product.get("name") or "",
+            str((data.get("amount") or data.get("total") or "")),
+            "paid" if completed else "pending",
+            1 if completed else 0,
+            _json.dumps(body, ensure_ascii=False),
+        ),
+    )
+    if customer.get("email"):
+        conn.execute(
+            "INSERT INTO leads (name, email, source, notes) VALUES (?, ?, ?, ?)",
+            (
+                f"{customer.get('first_name') or ''} {customer.get('last_name') or ''}".strip(),
+                customer.get("email"),
+                "chariow",
+                f"Achat {product.get('name') or ''}",
+            ),
+        )
+    conn.commit()
+    return {"ok": True, "event": event, "access_granted": bool(completed)}
+
+
+def _meta_verify_token() -> str:
+    return (hd_agent.env("META_VERIFY_TOKEN", "hubdigital") or "hubdigital").strip()
+
+
+@app.api_route("/webhooks/meta", methods=["GET", "HEAD"])
+@app.api_route("/webhooks/meta/", methods=["GET", "HEAD"])
+def meta_verify(request: Request):
+    """Meta envoie GET hub.mode=subscribe et attend le challenge en texte brut."""
+    params = request.query_params
+    mode = (params.get("hub.mode") or "").strip()
+    token = (params.get("hub.verify_token") or "").strip()
+    challenge = params.get("hub.challenge") or ""
+    if not mode:
+        return {"ok": True, "webhook": "meta", "verify_token_expected": "hubdigital"}
+    if mode == "subscribe" and token == _meta_verify_token():
+        return PlainTextResponse(content=str(challenge), status_code=200)
+    return PlainTextResponse(content="forbidden", status_code=403)
+
+
+@app.post("/webhooks/meta")
+async def meta_events(request: Request):
+    body = await request.json()
+    conn = db.get_conn()
+    for entry in body.get("entry") or []:
+        for change in entry.get("changes") or []:
+            value = change.get("value") or {}
+            field = change.get("field")
+            if field == "leadgen":
+                conn.execute(
+                    "INSERT INTO leads (name, source, meta_id, notes) VALUES (?, ?, ?, ?)",
+                    ("Lead Meta", "meta_lead_ad", str(value.get("leadgen_id") or ""), _json.dumps(value)),
+                )
+        for msg in entry.get("messaging") or []:
+            sender = ((msg.get("sender") or {}).get("id")) or ""
+            text = ((msg.get("message") or {}).get("text")) or ""
+            if not text:
+                continue
+            llm_text, src = hd_llm.generate_reply(text)
+            reply = llm_text or hd_agent.suggested_reply(text)
+            sent = 0
+            try:
+                result = hd_agent.meta_send_message(sender, reply)
+                sent = 1 if result.get("ok") else 0
+            except Exception:
+                sent = 0
+            conn.execute(
+                """
+                INSERT INTO conversations (channel, external_id, author, inbound, outbound, sent)
+                VALUES ('messenger', ?, ?, ?, ?, ?)
+                """,
+                (sender, sender, text, reply, sent),
+            )
+    conn.commit()
+    return {"ok": True}
+
+
+@app.get("/api/agent/campaigns")
+def agent_campaigns():
+    conn = db.get_conn()
+    rows = conn.execute("SELECT * FROM campaigns ORDER BY id DESC LIMIT 100").fetchall()
+    return {"count": len(rows), "campaigns": [dict(r) for r in rows]}
+
+
+@app.post("/api/agent/campaigns", status_code=201)
+def agent_create_campaign(payload: CampaignCreate):
+    cents = max(100, int(payload.daily_budget_xof))
+    meta_id = None
+    status = "draft"
+    message = "Brouillon local (Meta non connecté)."
+    if payload.publish:
+        try:
+            result = hd_agent.meta_create_campaign(payload.name, payload.objective, cents, status="PAUSED")
+            if result.get("ok"):
+                status = "paused_on_meta"
+                meta_id = str((result.get("meta") or {}).get("id") or "")
+                message = "Campagne créée sur Meta en PAUSED (à activer dans Ads Manager)."
+            else:
+                message = result.get("message") or message
+        except Exception as exc:  # noqa: BLE001
+            message = f"Erreur Meta : {exc}"
+            status = "error"
+    conn = db.get_conn()
+    cur = conn.execute(
+        """
+        INSERT INTO campaigns (name, objective, daily_budget, status, meta_campaign_id, message)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (payload.name, payload.objective, cents, status, meta_id, message),
+    )
+    conn.commit()
+    row = conn.execute("SELECT * FROM campaigns WHERE id = ?", (cur.lastrowid,)).fetchone()
+    return dict(row)
+
+
+@app.get("/api/agent/inbox")
+def agent_inbox():
+    conn = db.get_conn()
+    rows = conn.execute("SELECT * FROM conversations ORDER BY id DESC LIMIT 100").fetchall()
+    return {"count": len(rows), "messages": [dict(r) for r in rows]}
+
+
+@app.post("/api/agent/inbox")
+def agent_inbox_reply(payload: InboxReply):
+    llm_text, _src = hd_llm.generate_reply(payload.inbound)
+    reply = llm_text or hd_agent.suggested_reply(payload.inbound)
+    sent = 0
+    extra = None
+    if payload.send and payload.external_id:
+        try:
+            extra = hd_agent.meta_send_message(payload.external_id, reply)
+            sent = 1 if extra.get("ok") else 0
+        except Exception as exc:  # noqa: BLE001
+            extra = {"error": str(exc)}
+    conn = db.get_conn()
+    cur = conn.execute(
+        """
+        INSERT INTO conversations (channel, external_id, author, inbound, outbound, sent)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (payload.channel, payload.external_id, payload.author, payload.inbound, reply, sent),
+    )
+    conn.commit()
+    row = conn.execute("SELECT * FROM conversations WHERE id = ?", (cur.lastrowid,)).fetchone()
+    return {"conversation": dict(row), "meta": extra}
+
+
+@app.get("/api/agent/clients")
+def agent_clients():
+    conn = db.get_conn()
+    rows = conn.execute(
+        "SELECT customer_email, customer_name, product_name, status, access_granted, created_at FROM orders WHERE access_granted = 1 ORDER BY id DESC"
+    ).fetchall()
+    return {"count": len(rows), "clients": [dict(r) for r in rows]}
 
