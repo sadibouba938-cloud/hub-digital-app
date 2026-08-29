@@ -1,16 +1,17 @@
 # Pack vidéo prêt à publier — Hub Digital · « Le Kit Ultime »
 
 Pub pour le **Kit Ultime de création & vente de produits digitaux — du concept aux ventes**.
+**Prix intégré au montage : 2 500 FCFA (~~5 000 FCFA~~ barré), révélé à 30,5 s avec un « ding ».**
 Quatre fichiers encodés aux specs Instagram Reels / TikTok / Facebook, avec les textes à copier.
 
 ## 📦 Les 4 exports
 
 | Fichier | Format | Durée | Poids | À publier sur |
 |---|---|---|---|---|
-| `reel_kit_ultime_1080x1920.mp4` | 1080×1920 (9:16) | 42 s | 22 Mo | **Reels, TikTok, Shorts** (le principal) |
-| `reel_kit_ultime_court_1080x1920.mp4` | 1080×1920 (9:16) | 21 s | 9 Mo | A/B test : hook + promesse + CTA |
-| `reel_kit_ultime_feed_1080x1350.mp4` | 1080×1350 (4:5) | 42 s | 19 Mo | Post feed Instagram / Facebook |
-| `reel_kit_ultime_feed_1080x1080.mp4` | 1080×1080 (1:1) | 42 s | 18 Mo | Post feed carré, LinkedIn |
+| `reel_kit_ultime_1080x1920.mp4` | 1080×1920 (9:16) | 48 s | 25 Mo | **Reels, TikTok, Shorts** (le principal) |
+| `reel_kit_ultime_court_1080x1920.mp4` | 1080×1920 (9:16) | 27 s | 12 Mo | A/B test : hook + promesse + prix + CTA |
+| `reel_kit_ultime_feed_1080x1350.mp4` | 1080×1350 (4:5) | 48 s | 21 Mo | Post feed Instagram / Facebook |
+| `reel_kit_ultime_feed_1080x1080.mp4` | 1080×1080 (1:1) | 48 s | 20 Mo | Post feed carré, LinkedIn |
 
 Tous : H.264 High / yuv420p · 30 fps · AAC 48 kHz 160 kb/s · **faststart** · sous-titres incrustés.
 
@@ -33,7 +34,7 @@ python3 verify.py      # -> "TOUT EST PRET A PUBLIER"
 ```bash
 python3 -m venv ../../.venv && ../../.venv/bin/pip install pillow numpy imageio-ffmpeg
 python3 build_reel.py                                   # reel 9:16 complet
-SCENES_SEL=0,2,6,7 python3 build_reel.py                # montage court (scenes 1,3,7,8)
+SCENES_SEL=0,2,6,7,8 python3 build_reel.py              # montage court (hook, kit, prix, CTA, fin)
 RATIO=4x5 OUT_NAME=ma_video.mp4 python3 build_reel.py   # autre format (9x16 / 4x5 / 1x1)
 MUSIC_VOL=0 python3 build_reel.py                       # sans musique
 CRF=20 PRESET=fast python3 build_reel.py                # encodage plus leger

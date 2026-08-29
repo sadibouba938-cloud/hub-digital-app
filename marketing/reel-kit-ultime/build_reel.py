@@ -99,6 +99,15 @@ SCENES = [
         ],
     ),
     dict(
+        audio="v01_prix.mp3", img="04_kit_3d.jpg", hi=True, anchor=1150, sfx="ding",
+        lines=[
+            {"t": "AUJOURD'HUI", "c": "white", "size": 62},
+            {"t": "2 500 FCFA", "c": "orange", "size": 150},
+            {"t": "AU LIEU DE", "c": "white", "size": 50},
+            {"t": "5 000 FCFA", "c": "white", "size": 92, "strike": True},
+        ],
+    ),
+    dict(
         audio="v01_l7.mp3", img="05_vente_confirmee.jpg", hi=True, anchor=1080,
         lines=[
             {"t": "TON PREMIER PRODUIT", "c": "white", "size": 82},
@@ -109,9 +118,10 @@ SCENES = [
     dict(
         audio="v01_l8.mp3", img="04_kit_3d.jpg", endcard=True, hi=False, anchor=960,
         lines=[
-            {"t": "HUB DIGITAL", "c": "white", "size": 96},
-            {"t": "LE KIT ULTIME", "c": "orange", "size": 78},
-            {"t": "Création & vente de produits digitaux", "c": "muted", "size": 42, "font": FONT_REG},
+            {"t": "HUB DIGITAL", "c": "white", "size": 92},
+            {"t": "LE KIT ULTIME", "c": "orange", "size": 74},
+            {"t": "2 500 FCFA", "c": "white", "size": 118},
+            {"t": "AU LIEU DE 5 000 FCFA", "c": "muted", "size": 52, "strike": True},
         ],
         pill="LIEN EN BIO",
     ),
@@ -236,6 +246,24 @@ def moving_avg(x, w):
     return np.pad(out, (pad_l, len(x) - len(out) - pad_l), mode="edge").astype(np.float32)
 
 
+def add_sfx(base, t0, kind="ding", sr=SR):
+    """Petit son de revelation du prix."""
+    i0 = int(t0 * sr)
+    if kind == "ding":
+        dur = 0.85
+        m = int(dur * sr)
+        tt = np.arange(m) / sr
+        e = np.exp(-tt / 0.26)
+        wave = 0.55 * np.sin(2 * np.pi * 1320 * tt) + 0.35 * np.sin(2 * np.pi * 1980 * tt) \
+            + 0.18 * np.sin(2 * np.pi * 2640 * tt)
+        seg = e * wave
+    else:
+        return base
+    i1 = min(len(base), i0 + len(seg))
+    base[i0:i1] += seg[: i1 - i0] * 0.30
+    return base
+
+
 def duck(music, vo, sr=SR):
     """Baisse la musique sous la voix."""
     speech = (np.abs(vo) > 0.02).astype(np.float32)
@@ -303,7 +331,7 @@ def layout(scene):
             total = sum(widths) + gap * (len(group) - 1)
             laid.append(dict(font=f, size=size, color=spec.get("c", "white"),
                              words=group, widths=widths, total=total,
-                             gap=gap, line=li))
+                             gap=gap, line=li, strike=bool(spec.get("strike"))))
             words_all.extend(group)
     lh = [max(l["size"] * 1.24, 40) for l in laid]
     block_h = int(sum(lh) + 18 * (len(laid) - 1))
@@ -340,6 +368,12 @@ def render_text_layer(sc, lay, hi_index):
                    stroke_width=sw, stroke_fill=(0, 0, 0, 235))
             x += ww + l["gap"]
             wi += 1
+        if l.get("strike"):
+            x0 = (W - l["total"]) // 2
+            bar = max(6, l["size"] // 11)
+            d.rectangle([x0 - 8, y + l["size"] * 0.52 - bar // 2,
+                         x0 - 8 + l["total"] + 16, y + l["size"] * 0.52 + bar // 2],
+                        fill=(231, 76, 60, 235))
         y += hh + 18
     return img.crop((0, 0, W, y + pad))
 
@@ -484,6 +518,9 @@ def main():
         music = music[:len(vo)]
     music = duck(music, vo)
     mix = vo * 0.95 + music * MUSIC_VOL
+    for i, sc in enumerate(ACTIVE):           # effets ponctuels
+        if sc.get("sfx"):
+            mix = add_sfx(mix, starts[i], sc["sfx"])
     mix /= max(1e-6, float(np.max(np.abs(mix))))
     mix *= 0.92
     fo = int(0.9 * SR)                      # fondu de sortie
