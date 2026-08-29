@@ -99,12 +99,12 @@ SCENES = [
         ],
     ),
     dict(
-        audio="v01_prix.mp3", img="04_kit_3d.jpg", hi=True, anchor=1150, sfx="ding",
+        audio="v01_prix.mp3", img="04_kit_3d.jpg", hi=True, anchor=1140, sfx="ding",
         lines=[
-            {"t": "AUJOURD'HUI", "c": "white", "size": 62},
+            {"t": "SEULEMENT", "c": "white", "size": 58},
+            {"t": "CETTE SEMAINE", "c": "white", "size": 58},
             {"t": "2 500 FCFA", "c": "orange", "size": 150},
-            {"t": "AU LIEU DE", "c": "white", "size": 50},
-            {"t": "5 000 FCFA", "c": "white", "size": 92, "strike": True},
+            {"t": "AU LIEU DE 5 000 FCFA", "c": "white", "size": 62, "strike": True},
         ],
     ),
     dict(
@@ -116,14 +116,24 @@ SCENES = [
         pill="VOIR LE KIT",
     ),
     dict(
+        audio="v01_interaction.mp3", img="08_interaction.jpg", hi=True, anchor=1160,
+        bubbles=True, sfx="pop",
+        lines=[
+            {"t": "COMMENTE", "c": "white", "size": 76},
+            {"t": "« KIT »", "c": "orange", "size": 150},
+            {"t": "PARTAGE À UN AMI · SAUVEGARDE", "c": "white", "size": 48},
+        ],
+    ),
+    dict(
         audio="v01_l8.mp3", img="04_kit_3d.jpg", endcard=True, hi=False, anchor=960,
         lines=[
             {"t": "HUB DIGITAL", "c": "white", "size": 92},
             {"t": "LE KIT ULTIME", "c": "orange", "size": 74},
-            {"t": "2 500 FCFA", "c": "white", "size": 118},
-            {"t": "AU LIEU DE 5 000 FCFA", "c": "muted", "size": 52, "strike": True},
+            {"t": "2 500 FCFA", "c": "white", "size": 112},
+            {"t": "5 000 FCFA", "c": "muted", "size": 54, "strike": True},
+            {"t": "Offre valable cette semaine", "c": "muted", "size": 42, "font": FONT_REG},
         ],
-        pill="LIEN EN BIO",
+        pill="COMMENTE « KIT »",
     ),
 ]
 
@@ -249,6 +259,18 @@ def moving_avg(x, w):
 def add_sfx(base, t0, kind="ding", sr=SR):
     """Petit son de revelation du prix."""
     i0 = int(t0 * sr)
+    if kind == "pop":
+        segs = []
+        for f0, off in ((760.0, 0.0), (1140.0, 0.20)):
+            m = int(0.22 * sr)
+            tt = np.arange(m) / sr
+            segs.append((off, np.exp(-tt / 0.07) * np.sin(2 * np.pi * f0 * tt)))
+        for off, seg in segs:
+            j0 = i0 + int(off * sr)
+            j1 = min(len(base), j0 + len(seg))
+            if j1 > j0:
+                base[j0:j1] += seg[: j1 - j0] * 0.22
+        return base
     if kind == "ding":
         dur = 0.85
         m = int(dur * sr)
@@ -390,6 +412,25 @@ def draw_pill(img, text, y, alpha=255):
     d.text(((W - tw) // 2, y + (bh - 44) // 2 - 6), text, font=f, fill=(255, 255, 255, alpha))
     ax, ay = W // 2, y + bh + 16
     d.polygon([(ax - 22, ay), (ax + 22, ay), (ax, ay + 30)], fill=ORANGE + (alpha,))
+    return img
+
+
+def draw_bubbles(img, age, vs=1.0):
+    """Bulles de commentaires « KIT » qui apparaissent en cascade."""
+    d = ImageDraw.Draw(img, "RGBA")
+    f = font(FONT_BOLD, 40)
+    tw = d.textbbox((0, 0), "KIT", font=f)[2]
+    spots = [(120, 470), (700, 380), (330, 660), (640, 760)]
+    for k, (x, y) in enumerate(spots):
+        a = int(255 * min(1.0, max(0.0, (age - 0.25 - k * 0.28) / 0.25)))
+        if a <= 4:
+            continue
+        y = int(y * vs) + int(10 * np.sin(age * 2.2 + k))
+        bw, bh = tw + 74, 98
+        d.rounded_rectangle([x, y, x + bw, y + bh], radius=28, fill=(255, 255, 255, a))
+        d.polygon([(x + 34, y + bh - 2), (x + 78, y + bh - 2), (x + 46, y + bh + 30)],
+                  fill=(255, 255, 255, a))
+        d.text((x + 37, y + 24), "KIT", font=f, fill=(255, 122, 0, a))
     return img
 
 
@@ -572,6 +613,9 @@ def main():
         if ACTIVE[i].get("pill"):
             alpha = int(255 * min(1.0, max(0.0, (tl - 0.55) / 0.3)))
             draw_pill(frame, ACTIVE[i]["pill"], int(1420 * V_SCALE), alpha)
+
+        if ACTIVE[i].get("bubbles"):
+            draw_bubbles(frame, tl, V_SCALE)
 
         if t > 1.0:
             draw_badge(frame, t, int(255 * min(1.0, (t - 1.0) / 0.4)), V_SCALE)
