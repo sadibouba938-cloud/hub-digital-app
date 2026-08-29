@@ -20,7 +20,10 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(ROOT, "assets")
 AUDIO = os.path.join(ROOT, "audio")
 WORK = os.path.join(ROOT, "_work")
-OUT_MP4 = os.path.join(ROOT, "reel_kit_ultime_1080x1920.mp4")
+OUT_NAME = os.environ.get("OUT_NAME", "reel_kit_ultime_1080x1920.mp4")
+OUT_MP4 = os.path.join(ROOT, OUT_NAME)
+PRESET = os.environ.get("PRESET", "medium")     # encodage
+CRF = os.environ.get("CRF", "17")               # qualite (plus bas = meilleur)
 
 FFMPEG = "/home/user/.venv/lib/python3.11/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2"
 if not os.path.exists(FFMPEG):
@@ -28,6 +31,7 @@ if not os.path.exists(FFMPEG):
     FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 
 W, H, FPS = 1080, 1920, 30
+V_SCALE = 1.0            # echelle verticale des elements (1.0 = 1080x1920)
 SR = 48000
 
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -113,6 +117,8 @@ SCENES = [
     ),
 ]
 
+ACTIVE = list(SCENES)          # scenes retenues pour le montage en cours
+
 COLOR_MAP = {"white": WHITE, "orange": ORANGE, "muted": (170, 180, 190), "purple": PURPLE}
 
 # ------------------------------------------------------------------ audio
@@ -132,7 +138,7 @@ def decode_mp3(path):
 
 
 def build_vo_timeline():
-    clips = [decode_mp3(os.path.join(AUDIO, s["audio"])) for s in SCENES]
+    clips = [decode_mp3(os.path.join(AUDIO, s["audio"])) for s in ACTIVE]
     starts, pos = [], LEAD
     for c in clips:
         starts.append(pos)
@@ -353,11 +359,12 @@ def draw_pill(img, text, y, alpha=255):
     return img
 
 
-def draw_badge(img, t, alpha):
+def draw_badge(img, t, alpha, vs=1.0):
     d = ImageDraw.Draw(img, "RGBA")
-    f = font(FONT_BOLD, 38)
-    d.ellipse([62, 118, 62 + 30, 118 + 30], fill=ORANGE + (alpha,))
-    d.text((106, 118), "HUB DIGITAL", font=f, fill=(255, 255, 255, alpha),
+    f = font(FONT_BOLD, int(38 * min(1.0, vs) if vs < 1 else 38))
+    top = int(118 * vs)
+    d.ellipse([62, top, 62 + 30, top + 30], fill=ORANGE + (alpha,))
+    d.text((106, top), "HUB DIGITAL", font=f, fill=(255, 255, 255, alpha),
            stroke_width=3, stroke_fill=(0, 0, 0, alpha))
     return img
 
@@ -382,7 +389,7 @@ SCRIM = make_scrim()
 
 
 def scene_frame(i, t_local, dur):
-    sc = SCENES[i]
+    sc = ACTIVE[i]
     src = Image.open(os.path.join(ASSETS, sc["img"])).convert("RGB")
     if sc.get("endcard"):
         src = src.filter(ImageFilter.GaussianBlur(28))
@@ -416,7 +423,7 @@ def scene_frame(i, t_local, dur):
 
 
 def caption_layer(i, t_local, dur, cache, lay_cache):
-    sc = SCENES[i]
+    sc = ACTIVE[i]
     if lay_cache.get(i) is None:
         lay_cache[i] = layout(sc)
     lay = lay_cache[i]
@@ -448,8 +455,21 @@ def caption_layer(i, t_local, dur, cache, lay_cache):
 
 
 # ------------------------------------------------------------------ rendu
+RATIOS = {"9x16": (1080, 1920), "4x5": (1080, 1350), "1x1": (1080, 1080)}
+
+
 def main():
+    global W, H, V_SCALE, SCRIM, ACTIVE
     os.makedirs(WORK, exist_ok=True)
+
+    r = os.environ.get("RATIO", "9x16")
+    W, H = RATIOS.get(r, (1080, 1920))
+    V_SCALE = H / 1920
+    SCRIM = make_scrim()
+
+    sel = os.environ.get("SCENES_SEL")           # ex. "0,2,6,7" pour la version courte
+    ACTIVE = [SCENES[int(i)] for i in sel.split(",")] if sel else list(SCENES)
+
     vo, starts, durs, _ = build_vo_timeline()
     total = len(vo) / SR
     ends = [starts[k + 1] if k + 1 < len(starts) else starts[k] + durs[k] + TAIL
@@ -483,7 +503,9 @@ def main():
     nframes = int(total * FPS)
     cmd = [FFMPEG, "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
            "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-           "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+           "-an", "-c:v", "libx264", "-preset", PRESET, "-crf", CRF,
+           "-profile:v", "high", "-level", "4.1",
+           "-g", str(FPS * 2), "-keyint_min", str(FPS), "-sc_threshold", "0",
            "-pix_fmt", "yuv420p", "-movflags", "+faststart",
            os.path.join(WORK, "video.mp4")]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
@@ -507,15 +529,15 @@ def main():
                                 min(1.0, tl / XF)).convert("RGBA")
 
         layer, lay = caption_layer(i, tl, dur, cache, lay_cache)
-        y = lay["anchor"] - layer.height // 2
+        y = int(lay["anchor"] * V_SCALE) - layer.height // 2
         frame.alpha_composite(layer, (0, max(0, y)))
 
-        if SCENES[i].get("pill"):
+        if ACTIVE[i].get("pill"):
             alpha = int(255 * min(1.0, max(0.0, (tl - 0.55) / 0.3)))
-            draw_pill(frame, SCENES[i]["pill"], 1420, alpha)
+            draw_pill(frame, ACTIVE[i]["pill"], int(1420 * V_SCALE), alpha)
 
         if t > 1.0:
-            draw_badge(frame, t, int(255 * min(1.0, (t - 1.0) / 0.4)))
+            draw_badge(frame, t, int(255 * min(1.0, (t - 1.0) / 0.4)), V_SCALE)
 
         # barre de progression (haut de l'ecran)
         d = ImageDraw.Draw(frame, "RGBA")
@@ -532,11 +554,11 @@ def main():
 
     subprocess.run([FFMPEG, "-y", "-v", "error",
                     "-i", os.path.join(WORK, "video.mp4"), "-i", wav,
-                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-ar", "48000",
                     "-shortest", "-movflags", "+faststart", OUT_MP4], check=True)
 
     size = os.path.getsize(OUT_MP4) / 1e6
-    print(f"\nOK -> {OUT_MP4}  ({size:.1f} Mo, {total:.1f}s)")
+    print(f"\nOK -> {OUT_MP4}  {W}x{H}  ({size:.1f} Mo, {total:.1f}s)")
 
 
 if __name__ == "__main__":

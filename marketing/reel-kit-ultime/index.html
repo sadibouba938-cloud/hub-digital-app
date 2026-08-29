@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hub Digital — Kit Ultime · Pack prêt à publier</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --line:#232c38; --orange:#ff7a00;
+    --violet:#6c5ce7; --text:#e6edf3; --muted:#9aa7b4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+  header{padding:26px 22px 10px;border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:24px}
+  .sub{color:var(--muted);font-size:14px;margin-top:4px}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px;
+        display:grid;grid-template-columns:380px 1fr;gap:26px}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .phone{width:100%;max-width:330px;margin:0 auto;background:#000;border-radius:28px;
+         padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  video{width:100%;border-radius:20px;display:block;background:#000}
+  .formats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center}
+  .formats button{background:#1d242e;color:var(--text);border:1px solid var(--line);
+    border-radius:999px;padding:9px 14px;font-size:13px;cursor:pointer}
+  .formats button.on{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
+  h2{font-size:17px;margin:22px 0 8px}
+  h2:first-child{margin-top:0}
+  pre{white-space:pre-wrap;background:#0f1520;border:1px solid var(--line);
+      border-radius:12px;padding:14px;font-size:14px;margin:0;color:#dbe4ee}
+  .row{display:flex;gap:8px;margin-top:8px}
+  .btn{background:var(--orange);color:#fff;border:0;border-radius:10px;
+       padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text);font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase}
+  .tag{display:inline-block;background:rgba(255,122,0,.14);color:#ffb37a;
+       border-radius:6px;padding:2px 7px;font-size:11.5px;margin-right:4px}
+  ul{margin:8px 0 0 18px;padding:0}li{margin:4px 0;color:#dbe4ee}
+  .ok{color:#2ecc71;font-weight:700}
+  footer{color:var(--muted);font-size:13px;padding:8px 22px 34px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚀 Kit Ultime — pack vidéo prêt à publier</h1>
+  <div class="sub">Hub Digital · Création &amp; vente de produits digitaux · 4 formats contrôlés aux specs Reels / TikTok / Facebook</div>
+</header>
+
+<div class="wrap">
+  <!-- Lecteur -->
+  <div>
+    <div class="card">
+      <div class="phone">
+        <video id="v" controls playsinline autoplay muted
+               poster="assets/01_hook_scroll.jpg"
+               src="reel_kit_ultime_1080x1920.mp4"></video>
+      </div>
+      <div class="formats">
+        <button class="on" data-src="reel_kit_ultime_1080x1920.mp4">Reel 9:16 · 42 s</button>
+        <button data-src="reel_kit_ultime_court_1080x1920.mp4">Court 9:16 · 21 s</button>
+        <button data-src="reel_kit_ultime_feed_1080x1350.mp4">Feed 4:5 · 42 s</button>
+        <button data-src="reel_kit_ultime_feed_1080x1080.mp4">Carré 1:1 · 42 s</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>✅ Contrôle technique</h2>
+      <ul>
+        <li>H.264 High / yuv420p · 30 fps</li>
+        <li>AAC 48 kHz · 160 kb/s</li>
+        <li>Débit 3,1 – 4,0 Mb/s · <span class="ok">faststart activé</span></li>
+        <li>Durée ≤ 42 s · fichiers 9 – 22 Mo</li>
+        <li>Sous-titres incrustés (visible sans le son)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Textes -->
+  <div>
+    <div class="card">
+      <h2>📝 Légende à publier</h2>
+      <pre id="cap">Tu as une idée. Elle mérite mieux que tes notes. 🚀
+
+Le Kit Ultime Hub Digital t'emmène du concept aux ventes : idée, création, packaging, vente.
+Templates, pages de vente, scripts, emails — tout est prêt, tu n'as plus qu'à remplir.
+Même avec 0 expérience et 0 audience.
+
+👉 Lien en bio pour commencer aujourd'hui.
+
+Dis-moi en commentaire quel produit digital tu veux créer 👇</pre>
+      <div class="row"><button class="btn" onclick="cp('cap')">Copier la légende</button></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>#️⃣ Hashtags</h2>
+      <pre id="tags">#produitdigital #formationenligne #elearning #entrepreneuriat #businessenligne #marketingdigital #afrique #senegal #dakar #revenupassif #freelance #creationdecontenu #hubdigital</pre>
+      <div class="row"><button class="btn ghost" onclick="cp('tags')">Copier les hashtags</button></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>🎬 Plan du montage</h2>
+      <table>
+        <tr><th>Temps</th><th>Voix off</th><th>À l'écran</th></tr>
+        <tr><td>0.0s</td><td>Arrête de scroller. Ton idée vaut plus que ça.</td>
+            <td><span class="tag">HOOK</span>ARRÊTE DE / SCROLLER</td></tr>
+        <tr><td>4.0s</td><td>Tu veux créer un produit digital, mais tu bloques…</td><td>TU VEUX VENDRE UN PRODUIT DIGITAL… MAIS TU BLOQUES</td></tr>
+        <tr><td>10.0s</td><td>Le Kit Ultime t'emmène du concept aux ventes.</td><td>LE KIT ULTIME</td></tr>
+        <tr><td>15.9s</td><td>Idée. Création. Packaging. Vente.</td><td>IDÉE · CRÉATION · PACKAGING · VENTE</td></tr>
+        <tr><td>20.7s</td><td>Templates, pages de vente, scripts, emails…</td><td>TOUT EST PRÊT</td></tr>
+        <tr><td>27.2s</td><td>Même avec zéro expérience et zéro audience.</td><td>0 EXPÉRIENCE · 0 AUDIENCE</td></tr>
+        <tr><td>31.2s</td><td>Clique sur le lien en bio…</td><td><span class="tag">CTA</span>VOIR LE KIT</td></tr>
+        <tr><td>37.0s</td><td>Hub Digital. Le Kit Ultime.</td><td><span class="tag">FIN</span>HUB DIGITAL</td></tr>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>📌 Checklist de publication</h2>
+      <ul>
+        <li>Publier le <b>9:16</b> en Reel / TikTok / Short, le <b>4:5</b> ou le <b>1:1</b> dans le feed.</li>
+        <li>Ne rien coller sur les 2 premières secondes (zone du hook).</li>
+        <li>Épingler un commentaire avec le lien du kit + activer les réponses auto en DM.</li>
+        <li>Tester le <b>court 21 s</b> contre le <b>42 s</b> : garder le meilleur taux de rétention à 3 s.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>Fichiers sources et générateur : <code>marketing/reel-kit-ultime/</code> — <code>python3 build_reel.py</code></footer>
+
+<script>
+  const v = document.getElementById('v');
+  document.querySelectorAll('.formats button').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.formats button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      v.src = b.dataset.src;
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    };
+  });
+  function cp(id){
+    const t = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(t).then(() => {
+      const b = event.target; const old = b.innerText;
+      b.innerText = 'Copié ✓'; setTimeout(() => b.innerText = old, 1400);
+    });
+  }
+</script>
+</body>
+</html>

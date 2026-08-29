@@ -1,45 +1,61 @@
-# Reel pub — Hub Digital · « Le Kit Ultime » (9:16)
+# Pack vidéo prêt à publier — Hub Digital · « Le Kit Ultime »
 
-Fichier livré : **`reel_kit_ultime_1080x1920.mp4`** — 1080 × 1920, 30 fps, 42 s, ~13 Mo.
+Pub pour le **Kit Ultime de création & vente de produits digitaux — du concept aux ventes**.
+Quatre fichiers encodés aux specs Instagram Reels / TikTok / Facebook, avec les textes à copier.
 
-```
-marketing/reel-kit-ultime/
-├── reel_kit_ultime_1080x1920.mp4   ← la vidéo finale
-├── build_reel.py                   ← générateur complet (relance-le après modification)
-├── script.md                       ← script, accroches, légende, hashtags
-├── assets/                         ← 7 visuels 9:16 (IA)
-└── audio/                          ← voix off, une piste par phrase
-```
+## 📦 Les 4 exports
 
-## 🔁 Régénérer la vidéo
+| Fichier | Format | Durée | Poids | À publier sur |
+|---|---|---|---|---|
+| `reel_kit_ultime_1080x1920.mp4` | 1080×1920 (9:16) | 42 s | 22 Mo | **Reels, TikTok, Shorts** (le principal) |
+| `reel_kit_ultime_court_1080x1920.mp4` | 1080×1920 (9:16) | 21 s | 9 Mo | A/B test : hook + promesse + CTA |
+| `reel_kit_ultime_feed_1080x1350.mp4` | 1080×1350 (4:5) | 42 s | 19 Mo | Post feed Instagram / Facebook |
+| `reel_kit_ultime_feed_1080x1080.mp4` | 1080×1080 (1:1) | 42 s | 18 Mo | Post feed carré, LinkedIn |
+
+Tous : H.264 High / yuv420p · 30 fps · AAC 48 kHz 160 kb/s · **faststart** · sous-titres incrustés.
+
+## 👀 Aperçu dans le navigateur
 
 ```bash
 cd marketing/reel-kit-ultime
-python3 -m venv ../../.venv && ../../.venv/bin/pip install pillow numpy imageio-ffmpeg
-../../.venv/bin/python build_reel.py
+python3 serve_preview.py          # http://localhost:8000
+```
+La page `index.html` affiche le lecteur (4 formats), la légende et les hashtags à copier en un clic.
+
+## ✅ Contrôle technique
+
+```bash
+python3 verify.py      # -> "TOUT EST PRET A PUBLIER"
 ```
 
-Sortie : `reel_kit_ultime_1080x1920.mp4` (durée ~1 min 45 de rendu).
+## 🔁 Régénérer / personnaliser
 
-## ✏️ Personnaliser
+```bash
+python3 -m venv ../../.venv && ../../.venv/bin/pip install pillow numpy imageio-ffmpeg
+python3 build_reel.py                                   # reel 9:16 complet
+SCENES_SEL=0,2,6,7 python3 build_reel.py                # montage court (scenes 1,3,7,8)
+RATIO=4x5 OUT_NAME=ma_video.mp4 python3 build_reel.py   # autre format (9x16 / 4x5 / 1x1)
+MUSIC_VOL=0 python3 build_reel.py                       # sans musique
+CRF=20 PRESET=fast python3 build_reel.py                # encodage plus leger
+```
 
 | Je veux changer… | Où ? |
 |---|---|
-| Les textes à l'écran / tailles / couleurs | `SCENES` dans `build_reel.py` (clés `lines`) |
-| L'ordre ou les images | `SCENES[i]["img"]` dans `assets/` |
-| La voix off | remplacer les fichiers de `audio/` (une phrase = un fichier, même ordre) |
-| Le volume de la musique | `MUSIC_VOL=0.06 python3 build_reel.py` (`0` = sans musique) |
-| Les blancs entre phrases | `LEAD`, `GAP`, `TAIL` en haut de `build_reel.py` |
+| Textes à l'écran, tailles, couleurs | `SCENES` dans `build_reel.py` |
+| Images / ordre des plans | `SCENES[i]["img"]` + dossier `assets/` |
+| Voix off | fichiers de `audio/` (une phrase = un fichier) |
+| Blancs entre phrases | `LEAD`, `GAP`, `TAIL` |
+| Accroches alternatives | `script.md` (3 variantes à A/B tester) |
 
-Couleurs de marque utilisées : orange `#ff7a00`, violet `#6c5ce7`, fond `#0d1117`.
+Couleurs de marque : orange `#ff7a00`, violet `#6c5ce7`, fond `#0d1117`.
 
 ## 🧩 Ce que fait le générateur
 
-1. **Voix off** : assemble les pistes de `audio/` avec des blancs, normalise.
-2. **Musique** : instru synthétisée (124 BPM, kick/clap/hats/basse/nappe) + *ducking* automatique sous la voix.
-3. **Images** : recadrage 9:16 + Ken Burns (zoom avant/arrière alterné), voile dégradé + vignette pour la lisibilité.
-4. **Sous-titres** : gros titres contourés, surlignage mot à mot synchronisé, pop-in/punch à l'arrivée.
+1. **Voix off** : assemble `audio/` avec des blancs, normalise.
+2. **Musique** : instru synthétisée (124 BPM) + *ducking* automatique sous la voix.
+3. **Images** : recadrage au ratio demandé + Ken Burns, voile dégradé + vignette.
+4. **Sous-titres** : gros titres contourés, surlignage mot à mot, punch sur l'accroche.
 5. **Habillage** : badge « HUB DIGITAL », barre de progression, pastille CTA, carte de fin.
-6. Encodage H.264 (CRF 18) + AAC 192 kbps, `faststart` activé.
+6. **Encodage** : H.264 High CRF 17, GOP 2 s, `+faststart`, AAC 160 kb/s.
 
-Le script évite les zones masquées par l'interface Reels (texte entre 260 px et 1600 px de haut).
+Le texte reste entre 260 px et 1600 px de haut : hors des zones masquées par l'interface Reels.
