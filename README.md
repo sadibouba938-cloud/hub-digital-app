@@ -16,9 +16,10 @@ backend/
 ├── Procfile             # commande de démarrage (Railway / Render / Heroku)
 └── static/
     ├── index.html       # site vitrine Hub Digital
+    ├── kit-ultime.html  # page de vente « Kit Ultime » (Wave / Orange Money / Chariow)
     ├── taches.html      # tableau de bord
     ├── chat.css / chat.js
-    └── assets/          # css + js + i18n
+    └── assets/          # css + js + i18n + img/
 ```
 
 ---
@@ -63,6 +64,7 @@ ont besoin du backend Python (Options A ou B).
 | `/` | Site vitrine Hub Digital |
 | `/taches` | Tableau de bord (tâches + base SQLite) |
 | `/agent` | Agent Meta + Chariow (prospects, pubs, commandes) |
+| `/kit-ultime` | Page de vente du Kit Ultime (2 500 FCFA — Wave, Orange Money, Chariow) |
 | `/webhooks/meta` | Webhook officiel Graph (leads + Messenger) |
 | `/webhooks/chariow` | Pulse Chariow `sale.completed` |
 | `/boutique/produits` | Produits Chariow (proxy API) |

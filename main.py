@@ -127,6 +127,12 @@ def agent_page():
     return (STATIC_DIR / "agent.html").read_text(encoding="utf-8")
 
 
+@app.get("/kit-ultime", response_class=HTMLResponse)
+def kit_ultime_page():
+    """Page de vente dédiée au Kit Ultime (création & vente de produits digitaux)."""
+    return (STATIC_DIR / "kit-ultime.html").read_text(encoding="utf-8")
+
+
 @app.get("/chat.css", response_class=FileResponse)
 def chat_css():
     return FileResponse(STATIC_DIR / "chat.css")
@@ -165,6 +171,7 @@ def info():
         "database": "SQLite (data.db)",
         "endpoints": [
             "/ (site Hub Digital)", "/taches (tableau de bord)", "/assets/* (css/js)",
+            "/kit-ultime (page de vente Kit Ultime)",
             "/health", "/api/time", "/api/info", "/api/echo (POST)",
             "/tasks (GET, POST)", "/tasks/{id} (GET, PUT, DELETE)", "/stats (GET)",
         ],

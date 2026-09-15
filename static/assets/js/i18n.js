@@ -15,6 +15,7 @@ const I18N = {
     "nav.faq": "FAQ",
     "nav.contact": "Contact",
     "nav.store": "Boutique",
+    "nav.kit": "Kit Ultime",
 
     "shop.tag": "Boutique officielle",
     "shop.title": "Nos produits",
@@ -25,6 +26,9 @@ const I18N = {
     "shop.buy": "Acheter",
     "shop.viewAll": "Voir toute la boutique",
     "shop.secure": "Paiement sécurisé via Chariow",
+    "shop.kitTitle": "Kit Ultime — création & vente de produits digitaux",
+    "shop.kitDesc": "Modèles prêts à l’emploi, automatisation des ventes et stratégies adaptées au Sénégal. 2 500 FCFA au lieu de 5 000 FCFA cette semaine.",
+    "shop.kitBtn": "Découvrir le Kit Ultime",
     "shop.free": "Gratuit",
 
 
@@ -189,6 +193,7 @@ const I18N = {
     "nav.faq": "FAQ",
     "nav.contact": "Contact",
     "nav.store": "Shop",
+    "nav.kit": "Ultimate Kit",
 
     "shop.tag": "Official store",
     "shop.title": "Our products",
@@ -199,6 +204,9 @@ const I18N = {
     "shop.buy": "Buy",
     "shop.viewAll": "View full store",
     "shop.secure": "Secure payment via Chariow",
+    "shop.kitTitle": "Ultimate Kit — create & sell digital products",
+    "shop.kitDesc": "Ready-to-use templates, sales automation and marketing strategies built for Senegal. 2,500 FCFA instead of 5,000 FCFA this week.",
+    "shop.kitBtn": "Discover the Ultimate Kit",
     "shop.free": "Free",
 
 
@@ -363,6 +371,7 @@ const I18N = {
     "nav.faq": "الأسئلة الشائعة",
     "nav.contact": "اتصل بنا",
     "nav.store": "المتجر",
+    "nav.kit": "الحزمة القصوى",
 
     "shop.tag": "المتجر الرسمي",
     "shop.title": "منتجاتنا",
@@ -373,6 +382,9 @@ const I18N = {
     "shop.buy": "اشترِ",
     "shop.viewAll": "عرض المتجر كاملاً",
     "shop.secure": "دفع آمن عبر Chariow",
+    "shop.kitTitle": "الحزمة القصوى — إنشاء وبيع المنتجات الرقمية",
+    "shop.kitDesc": "قوالب جاهزة، أتمتة للمبيعات، واستراتيجيات مناسبة للسوق السنغالي. 2500 فرنك بدل 5000 هذا الأسبوع.",
+    "shop.kitBtn": "اكتشف الحزمة القصوى",
     "shop.free": "مجاني",
 
 

@@ -33,6 +33,18 @@
     .shop-card .actions .btn{flex:1;text-align:center;padding:10px 12px;font-size:13px}
     .shop-note{text-align:center;color:var(--muted);font-size:13px;margin-top:16px}
     .shop-note a{color:var(--primary);font-weight:600}
+
+    /* ===== Bandeau promo Kit Ultime ===== */
+    .shop-kit-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;
+                     background:linear-gradient(135deg,rgba(255,122,0,.16),rgba(108,92,231,.16));
+                     border:1px solid rgba(255,122,0,.35);border-radius:var(--radius);
+                     padding:20px 22px;margin-bottom:22px;text-align:left;
+                     transition:border-color .2s,transform .2s}
+    .shop-kit-banner:hover{border-color:rgba(255,122,0,.65);transform:translateY(-3px)}
+    .shop-kit-banner .b-title{display:block;font-weight:800;font-size:1.05rem;margin-bottom:4px}
+    .shop-kit-banner .b-desc{display:block;color:var(--muted);font-size:.92rem}
+    .shop-kit-banner .btn{white-space:nowrap}
+    @media(max-width:700px){.shop-kit-banner{flex-direction:column;align-items:flex-start}}
   </style>
   <link rel="stylesheet" href="chat.css" />
 </head>
@@ -63,6 +75,7 @@
         <li><a href="/taches" data-i18n="nav.dashboard">Tableau de bord</a></li>
         <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
         <li><a href="#boutique" class="nav-store" data-i18n="nav.store">Boutique</a></li>
+        <li><a href="/kit-ultime" class="nav-store"><span data-i18n="nav.kit">Kit Ultime</span> 🔥</a></li>
         <li><a href="#contact" class="nav-cta" data-i18n="nav.contact">Contact</a></li>
       </ul>
 
@@ -293,6 +306,13 @@
             Retrouvez nos produits et ressources digitales, directement sur notre boutique Chariow.
           </p>
         </div>
+        <a class="shop-kit-banner" href="/kit-ultime">
+          <span>
+            <span class="b-title" data-i18n="shop.kitTitle">Kit Ultime — création &amp; vente de produits digitaux</span>
+            <span class="b-desc" data-i18n="shop.kitDesc">Modèles prêts à l’emploi, automatisation des ventes et stratégies adaptées au Sénégal. 2 500 FCFA au lieu de 5 000 FCFA cette semaine.</span>
+          </span>
+          <span class="btn btn-primary" data-i18n="shop.kitBtn">Découvrir le Kit Ultime</span>
+        </a>
         <div class="shop-grid" id="shop-products"></div>
         <p class="shop-note">
           <span data-i18n="shop.secure">Paiement sécurisé via Chariow</span> ·
@@ -514,6 +534,7 @@
             <li><a href="#projets" data-i18n="nav.projects">Projets</a></li>
             <li><a href="/taches" data-i18n="nav.dashboard">Tableau de bord</a></li>
             <li><a href="#boutique" data-i18n="nav.store">Boutique</a></li>
+            <li><a href="/kit-ultime" data-i18n="nav.kit">Kit Ultime</a></li>
           </ul>
         </div>
 

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kit Ultime — Création &amp; vente de produits digitaux | Hub Digital</title>
+  <meta name="description" content="Le Kit Ultime Hub Digital : modèles prêts à l’emploi, automatisation des ventes, stratégies marketing adaptées au Sénégal. Paiement Wave, Orange Money ou carte. 2 500 FCFA au lieu de 5 000 FCFA." />
+  <meta property="og:title" content="Kit Ultime — Création &amp; vente de produits digitaux" />
+  <meta property="og:description" content="Transformez vos idées en revenus : checklists, templates HTML/Excel, guides marketing et automatisation. 2 500 FCFA cette semaine." />
+  <meta property="og:type" content="product" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:image" content="/assets/img/kit-ultime.jpg" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚀</text></svg>" />
+
+  <!-- Design system du site Hub Digital -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <style>
+    /* ===== Page Kit Ultime (styles dédiés) ===== */
+    .kit-page { padding-bottom: 0; }
+    .kit-page section { scroll-margin-top: 90px; }
+
+    /* --- Hero --- */
+    .kit-hero {
+      position: relative;
+      padding: 70px 0 60px;
+      overflow: hidden;
+    }
+    .kit-hero::before {
+      content: "";
+      position: absolute;
+      inset: -30% 40% 20% -20%;
+      background: radial-gradient(closest-side, rgba(255, 122, 0, 0.22), transparent 70%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+    .kit-hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 44px;
+      align-items: center;
+      position: relative;
+    }
+    @media (max-width: 900px) {
+      .kit-hero-grid { grid-template-columns: 1fr; gap: 30px; }
+    }
+    .kit-promo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: rgba(255, 122, 0, 0.14);
+      border: 1px solid rgba(255, 122, 0, 0.35);
+      color: #ffb37a;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .kit-hero h1 {
+      font-size: clamp(1.9rem, 4.4vw, 3.05rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+    .kit-hero .kit-sub {
+      color: var(--muted);
+      font-size: 1.12rem;
+      max-width: 32rem;
+      margin-bottom: 28px;
+    }
+    .kit-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .kit-price-line {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .kit-price-line strong {
+      color: var(--white);
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+    .kit-price-line del { color: rgba(155, 167, 180, 0.75); }
+
+    .kit-visual {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow);
+      background: var(--dark-2);
+    }
+    .kit-visual img { width: 100%; height: auto; display: block; }
+    .kit-badge-float {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(13, 17, 23, 0.86);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 122, 0, 0.4);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ffb37a;
+    }
+
+    /* --- Bandeau de points clés --- */
+    .kit-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 0 0 10px;
+    }
+    @media (max-width: 900px) { .kit-strip { grid-template-columns: repeat(2, 1fr); } }
+    .kit-strip div {
+      background: var(--dark-2);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #dbe4ee;
+    }
+    .kit-strip span { display: block; color: var(--primary); font-size: 1.15rem; margin-bottom: 6px; }
+
+    /* --- Grilles de cartes --- */
+    .kit-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 700px) { .kit-cards { grid-template-columns: 1fr; } }
+    .kit-card {
+      background: var(--dark-2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .kit-card:hover { transform: translateY(-4px); border-color: rgba(255, 122, 0, 0.45); }
+    .kit-card .ico {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: rgba(255, 122, 0, 0.13);
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+    }
+    .kit-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .kit-card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* --- Section sombre alternée --- */
+    .kit-alt { background: rgba(22, 27, 34, 0.6); border-block: 1px solid rgba(255, 255, 255, 0.06); }
+
+    /* --- Bloc prix --- */
+    .kit-offer {
+      max-width: 720px;
+      margin: 0 auto;
+      background: linear-gradient(160deg, var(--dark-2), var(--dark-3));
+      border: 1px solid rgba(255, 122, 0, 0.35);
+      border-radius: 22px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .kit-offer .ribbon {
+      display: inline-block;
+      background: var(--gradient);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+    .kit-offer .amount {
+      font-size: clamp(2.4rem, 7vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+    .kit-offer .amount small { font-size: 0.4em; font-weight: 700; letter-spacing: 0; }
+    .kit-offer .old {
+      color: var(--muted);
+      font-size: 1.15rem;
+      margin-top: 10px;
+    }
+    .kit-offer .old del { color: rgba(155, 167, 180, 0.8); }
+    .kit-offer .save {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--green);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .kit-offer .kit-actions { justify-content: center; margin: 26px 0 6px; }
+    .kit-fineprint { color: var(--muted); font-size: 0.82rem; margin-top: 14px; }
+
+    /* --- Moyens de paiement --- */
+    .pay-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+      text-align: left;
+    }
+    @media (max-width: 640px) { .pay-grid { grid-template-columns: 1fr; } }
+    .pay-card {
+      background: rgba(13, 17, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .pay-card.wave { border-color: rgba(51, 183, 240, 0.45); }
+    .pay-card.om { border-color: rgba(255, 121, 0, 0.45); }
+    .pay-card h4 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .pay-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .pay-card.wave .pay-dot { background: #33b7f0; }
+    .pay-card.om .pay-dot { background: #ff7900; }
+    .pay-card p { color: var(--muted); font-size: 0.88rem; }
+    .pay-number {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 0 4px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .pay-number .num {
+      font-size: 1.22rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .copy-btn.done { background: rgba(46, 204, 113, 0.18); border-color: rgba(46, 204, 113, 0.6); color: #7ff0b0; }
+
+    /* --- Étapes --- */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 34px; }
+    @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+    .step {
+      background: var(--dark-2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+    .step .n {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: var(--white);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .step h3 { font-size: 1rem; margin-bottom: 8px; }
+    .step p { color: var(--muted); font-size: 0.92rem; }
+
+    /* --- FAQ --- */
+    .faq-list { max-width: 780px; margin: 34px auto 0; }
+    .faq-list details {
+      background: var(--dark-2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-list summary {
+      cursor: pointer;
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+    }
+    .faq-list summary::-webkit-details-marker { display: none; }
+    .faq-list summary::after {
+      content: "+";
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .faq-list details[open] summary::after { content: "–"; }
+    .faq-list details[open] summary { color: var(--primary); }
+    .faq-list .answer {
+      padding: 0 20px 18px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    /* --- Barre d'achat fixe (mobile) --- */
+    .kit-stickybar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(13, 17, 23, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 122, 0, 0.35);
+    }
+    .kit-stickybar .sb-price { font-size: 0.8rem; color: var(--muted); line-height: 1.25; }
+    .kit-stickybar .sb-price b { display: block; color: var(--white); font-size: 1.05rem; }
+    .kit-stickybar .btn { padding: 11px 20px; font-size: 0.92rem; }
+    @media (max-width: 760px) {
+      .kit-stickybar { display: flex; }
+      .kit-page { padding-bottom: 74px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .kit-card, .btn { transition: none; }
+    }
+  </style>
+</head>
+
+<body class="kit-page">
+
+  <!-- ================= Navigation ================= -->
+  <header id="siteHeader">
+    <nav class="container navbar" aria-label="Navigation Kit Ultime">
+      <a href="/" class="logo">
+        <span class="logo-badge">🚀</span>
+        Hub <span>Digital</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#avantages">Avantages</a></li>
+        <li><a href="#contenu">Contenu</a></li>
+        <li><a href="#achat">Prix</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://qxcvjkbl.mychariow.market" target="_blank" rel="noopener noreferrer" class="nav-store">Boutique</a></li>
+        <li><a href="#achat" class="nav-cta">Acheter 2 500 FCFA</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= Hero ================= -->
+    <section class="kit-hero" id="accueil">
+      <div class="container kit-hero-grid">
+        <div>
+          <span class="kit-promo">🔥 Promotion cette semaine : −50 %</span>
+          <h1>🚀 Kit Ultime de création &amp; vente de produits digitaux</h1>
+          <p class="kit-sub">
+            Transformez vos idées en revenus grâce à ce kit complet : checklists professionnelles,
+            templates HTML/Excel, guides marketing et outils d’automatisation.
+          </p>
+          <div class="kit-actions">
+            <a href="#achat" class="btn btn-primary">Acheter maintenant</a>
+            <a href="#contenu" class="btn btn-outline">Voir ce que contient le kit</a>
+          </div>
+          <p class="kit-price-line">
+            <strong>2 500 FCFA</strong>
+            <del>5 000 FCFA</del>
+            <span>· Wave, Orange Money ou carte · livraison après validation du paiement</span>
+          </p>
+        </div>
+
+        <div class="kit-visual">
+          <img src="assets/img/kit-ultime.jpg" width="1200" height="670"
+               alt="Kit Ultime Hub Digital : ordinateur, tablette et téléphone affichant les modèles et templates du kit"
+               srcset="assets/img/kit-ultime-small.jpg 900w, assets/img/kit-ultime.jpg 1200w"
+               sizes="(max-width: 900px) 92vw, 520px" />
+          <span class="kit-badge-float">2 500 FCFA cette semaine</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Points clés ================= -->
+    <div class="container">
+      <div class="kit-strip">
+        <div><span>📦</span>Modèles prêts à l’emploi</div>
+        <div><span>⚙️</span>Automatisation des ventes</div>
+        <div><span>🇸🇳</span>Stratégies adaptées au Sénégal</div>
+        <div><span>📱</span>Paiement Wave &amp; Orange Money</div>
+      </div>
+    </div>
+
+    <!-- ================= Avantages ================= -->
+    <section id="avantages">
+      <div class="container">
+        <div class="center">
+          <span class="section-tag">Avantages</span>
+          <h2 class="section-title">Pourquoi choisir le Kit Ultime ?</h2>
+          <p class="section-desc">
+            Tout ce qu’il faut pour passer de l’idée au produit digital qui se vend,
+            sans repartir de zéro.
+          </p>
+        </div>
+
+        <div class="kit-cards">
+          <article class="kit-card">
+            <div class="ico">📄</div>
+            <h3>Modèles prêts à l’emploi</h3>
+            <p>Des modèles à remplir pour lancer votre produit digital rapidement.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">⚙️</div>
+            <h3>Automatisation des ventes</h3>
+            <p>Des outils d’automatisation pour encaisser et livrer sans tout faire à la main.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">🇸🇳</div>
+            <h3>Stratégies marketing adaptées au Sénégal</h3>
+            <p>Des méthodes pensées pour le marché sénégalais et sa façon de consommer.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">📱</div>
+            <h3>Support pour Wave &amp; Orange Money</h3>
+            <p>Paiement mobile money au <strong>78 473 70 85</strong>, sur Wave comme sur Orange Money.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Contenu ================= -->
+    <section class="kit-alt" id="contenu">
+      <div class="container">
+        <div class="center">
+          <span class="section-tag">Contenu du kit</span>
+          <h2 class="section-title">Ce que vous obtenez</h2>
+          <p class="section-desc">
+            Le Kit Ultime contient des checklists professionnelles, des templates HTML/Excel,
+            des guides marketing et des outils d’automatisation pour lancer vos produits
+            digitaux rapidement.
+          </p>
+        </div>
+
+        <div class="kit-cards">
+          <article class="kit-card">
+            <div class="ico">✅</div>
+            <h3>Checklists professionnelles</h3>
+            <p>Les étapes à cocher pour lancer votre produit sans rien oublier.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">🧩</div>
+            <h3>Templates HTML &amp; Excel</h3>
+            <p>Des fichiers prêts à l’emploi : pages de vente, tableaux de suivi et de gestion.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">📣</div>
+            <h3>Guides marketing</h3>
+            <p>Les stratégies de contenu, d’audience et de vente, expliquées pas à pas.</p>
+          </article>
+          <article class="kit-card">
+            <div class="ico">🤖</div>
+            <h3>Outils d’automatisation</h3>
+            <p>De quoi automatiser la prise de commande, la livraison et le suivi.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Prix & paiement ================= -->
+    <section id="achat">
+      <div class="container">
+        <div class="center">
+          <span class="section-tag">Offre de lancement</span>
+          <h2 class="section-title">Obtenez le Kit Ultime aujourd’hui</h2>
+        </div>
+
+        <div class="kit-offer">
+          <span class="ribbon">Promotion — cette semaine</span>
+          <div class="amount">2 500 <small>FCFA</small></div>
+          <p class="old">au lieu de <del>5 000 FCFA</del></p>
+          <span class="save">Vous économisez 2 500 FCFA 🎉</span>
+
+          <div class="kit-actions">
+            <a class="btn btn-primary"
+               href="https://qxcvjkbl.mychariow.market"
+               target="_blank" rel="noopener noreferrer">
+              💳 Payer par carte (Chariow)
+            </a>
+            <a class="btn btn-outline" id="waBtn"
+               href="https://wa.me/221784737085?text=Bonjour%20Hub%20Digital%2C%20je%20souhaite%20acheter%20le%20Kit%20Ultime%20%282%20500%20FCFA%29."
+               target="_blank" rel="noopener noreferrer">
+              💬 Commander sur WhatsApp
+            </a>
+          </div>
+
+          <p class="kit-fineprint">
+            Paiement en ligne sécurisé via la boutique Chariow, ou en mobile money
+            (Wave / Orange Money) au <strong>78 473 70 85</strong>.
+          </p>
+
+          <div class="pay-grid">
+            <div class="pay-card wave">
+              <h4><span class="pay-dot"></span>Wave</h4>
+              <p>Envoyez 2 500 FCFA au numéro ci-dessous depuis votre application Wave.</p>
+              <div class="pay-number">
+                <span class="num">78 473 70 85</span>
+                <button type="button" class="copy-btn" data-copy="784737085" aria-label="Copier le numéro Wave">Copier</button>
+              </div>
+            </div>
+
+            <div class="pay-card om">
+              <h4><span class="pay-dot"></span>Orange Money</h4>
+              <p>Envoyez 2 500 FCFA au numéro ci-dessous depuis Orange Money.</p>
+              <div class="pay-number">
+                <span class="num">78 473 70 85</span>
+                <button type="button" class="copy-btn" data-copy="784737085" aria-label="Copier le numéro Orange Money">Copier</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Comment ça marche ================= -->
+    <section class="kit-alt" id="commander">
+      <div class="container">
+        <div class="center">
+          <span class="section-tag">Commande</span>
+          <h2 class="section-title">Comment obtenir votre kit</h2>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="n">1</div>
+            <h3>Payez 2 500 FCFA</h3>
+            <p>Par carte via la boutique Chariow, ou en Wave / Orange Money au 78 473 70 85.</p>
+          </div>
+          <div class="step">
+            <div class="n">2</div>
+            <h3>Envoyez la preuve</h3>
+            <p>Transmettez la capture du paiement sur WhatsApp pour une validation rapide.</p>
+          </div>
+          <div class="step">
+            <div class="n">3</div>
+            <h3>Recevez le Kit Ultime</h3>
+            <p>Dès le paiement validé, le kit complet vous est envoyé (WhatsApp ou email).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq">
+      <div class="container">
+        <div class="center">
+          <span class="section-tag">FAQ</span>
+          <h2 class="section-title">Questions fréquentes</h2>
+        </div>
+
+        <div class="faq-list">
+          <details open>
+            <summary>Combien coûte le Kit Ultime ?</summary>
+            <div class="answer">
+              2 500 FCFA au lieu de 5 000 FCFA — l’offre promotionnelle est valable cette semaine seulement.
+            </div>
+          </details>
+          <details>
+            <summary>Comment puis-je payer ?</summary>
+            <div class="answer">
+              Par carte ou en ligne via la boutique Chariow, ou en mobile money :
+              Wave et Orange Money au <strong>78 473 70 85</strong>.
+            </div>
+          </details>
+          <details>
+            <summary>Comment je reçois le kit après paiement ?</summary>
+            <div class="answer">
+              Dès que votre paiement est validé, le Kit Ultime vous est envoyé avec ses modèles,
+              templates et guides prêts à l’emploi.
+            </div>
+          </details>
+          <details>
+            <summary>Le kit est-il adapté au marché sénégalais ?</summary>
+            <div class="answer">
+              Oui : les stratégies marketing et les moyens de paiement (Wave, Orange Money)
+              sont pensés pour le Sénégal et sa façon de consommer.
+            </div>
+          </details>
+          <details>
+            <summary>Puis-je commencer sans expérience ?</summary>
+            <div class="answer">
+              Oui. Le kit s’adresse aussi bien aux débutants qu’aux créateurs déjà lancés :
+              tout est expliqué pas à pas, du concept jusqu’à la vente.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA final ================= -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box center">
+          <h2>Prêt·e à lancer votre produit digital ?</h2>
+          <p>Le Kit Ultime vous donne les modèles, les guides et l’automatisation. Il ne reste qu’à commencer.</p>
+          <div class="kit-actions">
+            <a href="#achat" class="btn btn-light">Acheter le Kit Ultime — 2 500 FCFA</a>
+            <a href="https://wa.me/221784737085?text=Bonjour%20Hub%20Digital%2C%20j%27ai%20une%20question%20sur%20le%20Kit%20Ultime."
+               target="_blank" rel="noopener noreferrer" class="btn btn-cta-outline">Poser une question</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <span class="logo-badge">🚀</span>
+            Hub <span>Digital</span>
+          </a>
+          <p>
+            Créativité et technologie au service de votre vitrine digitale :
+            produits, kits et solutions pensés pour le marché africain.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="#avantages">Avantages</a></li>
+            <li><a href="#contenu">Contenu du kit</a></li>
+            <li><a href="#achat">Prix &amp; paiement</a></li>
+            <li><a href="/taches">Tableau de bord</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@hubdigital.com">contact@hubdigital.com</a></li>
+            <li><a href="https://wa.me/221784737085" target="_blank" rel="noopener noreferrer">WhatsApp : 78 473 70 85</a></li>
+            <li><a href="https://qxcvjkbl.mychariow.market" target="_blank" rel="noopener noreferrer">Boutique Chariow</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Hub Digital — Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= Barre d'achat mobile ================= -->
+  <div class="kit-stickybar" role="region" aria-label="Achat rapide">
+    <div class="sb-price">
+      Kit Ultime
+      <b>2 500 FCFA <del style="color:#9aa7b4;font-size:0.85rem">5 000</del></b>
+    </div>
+    <a href="#achat" class="btn btn-primary">Acheter</a>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* --- Menu mobile + en-tête au scroll --- */
+      var toggle = document.getElementById("menuToggle");
+      var links = document.getElementById("navLinks");
+      var header = document.getElementById("siteHeader");
+
+      if (toggle && links) {
+        toggle.addEventListener("click", function () {
+          var open = links.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", String(open));
+          toggle.textContent = open ? "✕" : "☰";
+        });
+        links.querySelectorAll("a").forEach(function (a) {
+          a.addEventListener("click", function () {
+            links.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.textContent = "☰";
+          });
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            links.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.textContent = "☰";
+          }
+        });
+      }
+
+      if (header) {
+        var onScroll = function () {
+          header.classList.toggle("scrolled", window.scrollY > 10);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+      }
+
+      /* --- Copier le numéro mobile money --- */
+      function flash(btn, ok) {
+        var old = btn.textContent;
+        btn.textContent = ok ? "Copié ✓" : "Copiez : 784737085";
+        btn.classList.toggle("done", ok);
+        setTimeout(function () {
+          btn.textContent = old;
+          btn.classList.remove("done");
+        }, 1600);
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand("copy") ? resolve() : reject();
+          } catch (e) {
+            reject(e);
+          } finally {
+            document.body.removeChild(ta);
+          }
+        });
+      }
+
+      document.querySelectorAll(".copy-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          copyText(btn.dataset.copy || "784737085")
+            .then(function () { flash(btn, true); })
+            .catch(function () { flash(btn, false); });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
