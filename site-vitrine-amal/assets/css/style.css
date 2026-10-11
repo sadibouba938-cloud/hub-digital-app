@@ -352,13 +352,44 @@ p { margin: 0 0 1rem; }
 
 .hero__visual { position: relative; }
 .hero__photo {
+  position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 1px solid rgba(255, 255, 255, .14);
-  aspect-ratio: 4 / 3.35;
+  /* Cadrage natif des visuels d'atelier : rien n'est rogné (bouteilles AMAL au 1er plan) */
+  aspect-ratio: 3 / 2;
 }
 .hero__photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Légende discrète posée sur les photos d'atelier */
+.photo-caption {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: #eaf1fd;
+  background: rgba(4, 18, 47, .72);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  padding: 8px 14px;
+  backdrop-filter: blur(6px);
+  max-width: calc(100% - 28px);
+}
+.photo-caption::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-400);
+  flex: none;
+}
 
 .hero__card {
   position: absolute;
@@ -624,6 +655,8 @@ p { margin: 0 0 1rem; }
 .split--reverse .split__media { order: 2; }
 .split__media { position: relative; }
 .split__media img { border-radius: var(--radius-lg); box-shadow: var(--shadow); width: 100%; aspect-ratio: 4 / 3.2; object-fit: cover; }
+.split__media--portrait img { aspect-ratio: 4 / 5.1; object-position: center 42%; }
+.split__media .photo-caption { left: 16px; bottom: 16px; }
 .split__badge {
   position: absolute;
   right: -18px;
@@ -855,7 +888,7 @@ p { margin: 0 0 1rem; }
 .cta-band--photo {
   background-image:
     linear-gradient(100deg, rgba(4, 18, 47, .95) 0%, rgba(10, 42, 104, .9) 48%, rgba(4, 18, 47, .72) 100%),
-    url("../img/atelier-gamme.jpg");
+    url("../img/palette-livraison.jpg");
   background-size: cover, cover;
   background-position: center, center;
   border: 1px solid rgba(255, 255, 255, .12);
@@ -993,6 +1026,7 @@ p { margin: 0 0 1rem; }
   .split { grid-template-columns: 1fr; gap: 40px; }
   .split--reverse .split__media { order: 0; }
   .split__badge { right: 14px; bottom: -14px; }
+  .split__media .photo-caption { max-width: 62%; font-size: .68rem; padding: 7px 12px; }
   .section { padding: 72px 0; }
 }
 

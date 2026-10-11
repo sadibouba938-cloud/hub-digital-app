@@ -29,6 +29,29 @@ bleu = lessive, ambre = dégraissant**.
 
 ---
 
+## 🖼️ L'assemblage : rendus 3D AMAL + photos d'usine
+
+Les visuels du site sont le **fruit d'un assemblage** entre les photos réelles de la
+production et les rendus 3D des packagings AMAL. Les quatre scènes obtenues habillent
+tout le parcours du visiteur :
+
+| Visuel assemblé | Composition | Où il apparaît |
+|---|---|---|
+| `hero-atelier.jpg` | Ligne de conditionnement + gamme AMAL au premier plan | Accueil (héro) |
+| `showcase-gamme-usine.jpg` | Gamme AMAL posée dans l'atelier, ligne en arrière-plan | Bandeau « La marque AMAL » |
+| `palette-livraison.jpg` | Équipe en train d'emballer + palette de cartons siglés AMAL | Section « Notre histoire » + fond du bandeau revendeur |
+| `labo-amal.jpg` | Technicienne au laboratoire + flacon AMAL Vaisselle Citron | Section « Qualité & process » |
+
+Chaque photo d'atelier reçoit une **légende discrète** en surimpression
+(« Notre ligne de conditionnement — Diamniadio », « Contrôle d'un lot en laboratoire »,
+« Palettes prêtes à partir pour Dakar et les régions ») qui renforce le sérieux du site.
+
+Les fichiers d'origine sont conservés dans `assets/img/sources/` : ils servent de
+matière première (nouvelles compositions, presse, réseaux sociaux) et ne sont pas
+appelés par la page.
+
+---
+
 ## ✨ Les produits en rendu 3D, étiquetés AMAL
 
 Les 8 références de la gamme sont présentées sous forme de **rendus 3D publicitaires**,
@@ -84,12 +107,12 @@ site-vitrine-amal/
     ├── css/style.css           # charte AMAL complète + scènes 3D + responsive
     ├── js/main.js              # menu, filtres, FAQ, compteurs, formulaire de devis
     └── img/
-        ├── hero-usine.jpg          # ligne de production (hero)
-        ├── atelier-gamme.jpg       # visuels packshot (fond du bandeau revendeur)
-        ├── laboratoire.jpg         # contrôle qualité
-        ├── equipe-logistique.jpg   # équipe / expédition
-        ├── gamme-amal.jpg          # gamme 3D complète
-        └── produit-*.jpg           # 8 rendus 3D étiquetés AMAL
+        ├── hero-atelier.jpg            # assemblage : usine + gamme AMAL (héro)
+        ├── showcase-gamme-usine.jpg     # gamme AMAL dans l'atelier
+        ├── palette-livraison.jpg        # équipe, cartons et palette siglés AMAL
+        ├── labo-amal.jpg                # laboratoire + flacon AMAL
+        ├── produit-*.jpg                # 8 rendus 3D étiquetés AMAL
+        └── sources/                     # photos et rendus d'origine (non appelés)
 ```
 
 ---
@@ -160,7 +183,7 @@ témoignages et rendus 3D sont des exemples à valider avec l'entreprise.
 - [ ] Validation de la charte : nuances de bleu / vert / or et polices définitives
 - [ ] Numéros de téléphone / WhatsApp réels et adresse e-mail professionnelle
 - [ ] Adresse réelle de l'usine et nom de domaine
-- [ ] **Rendus 3D validés par le client** (formes d'emballage et étiquettes définitives)
+- [ ] **Rendus 3D et assemblages validés par le client** (formes d'emballage et étiquettes définitives)
 - [ ] Prix, formats et quantités minimum — à publier quand ils seront fixés
 - [ ] Témoignages clients (à recueillir, avec accord écrit, ou à retirer)
 - [ ] Zones et délais de livraison réellement assurés
@@ -171,7 +194,7 @@ témoignages et rendus 3D sont des exemples à valider avec l'entreprise.
 ## ✅ Contrôles techniques
 
 - HTML sans erreur de structure et CSS équilibré (vérifiés automatiquement).
-- 15 références d'assets : toutes présentes.
+- 14 références d'assets : toutes présentes, aucune image orpheline.
 - Aucune mention de l'ancienne marque, aucun prix fictif résiduel.
 - Formulaire validé en direct (nom, téléphone ≥ 9 chiffres, ville, type de demande, e-mail, consentement).
 - Rendu servi en HTTP 200 par le serveur de prévisualisation **et** par FastAPI (`/amal/`, `/amal/assets/…`).
