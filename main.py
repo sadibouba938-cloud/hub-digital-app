@@ -9,7 +9,7 @@ import urllib.request
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -110,6 +110,26 @@ class InboxReply(BaseModel):
 
 # ---------- Site vitrine Hub Digital (fusionné) ----------
 app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
+
+# ---------- Site vitrine client : Sunu Clean Sénégal (fabricant de détergents) ----------
+VITRINE_DIR = Path(__file__).resolve().parent / "site-vitrine-sunu-clean"
+
+if VITRINE_DIR.is_dir():
+    app.mount(
+        "/sunu-clean/assets",
+        StaticFiles(directory=VITRINE_DIR / "assets"),
+        name="sunu-clean-assets",
+    )
+
+    @app.get("/sunu-clean")
+    def sunu_clean_redirect():
+        # Redirection vers la version avec slash pour que les chemins relatifs
+        # (assets/css/style.css) soient résolus correctement.
+        return RedirectResponse(url="/sunu-clean/", status_code=307)
+
+    @app.get("/sunu-clean/", response_class=HTMLResponse)
+    def sunu_clean_home():
+        return (VITRINE_DIR / "index.html").read_text(encoding="utf-8")
 
 
 @app.get("/", response_class=HTMLResponse)
