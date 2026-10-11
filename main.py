@@ -111,24 +111,24 @@ class InboxReply(BaseModel):
 # ---------- Site vitrine Hub Digital (fusionné) ----------
 app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
 
-# ---------- Site vitrine client : Sunu Clean Sénégal (fabricant de détergents) ----------
-VITRINE_DIR = Path(__file__).resolve().parent / "site-vitrine-sunu-clean"
+# ---------- Site vitrine client : AMAL (fabricant de détergents, Sénégal) ----------
+VITRINE_DIR = Path(__file__).resolve().parent / "site-vitrine-amal"
 
 if VITRINE_DIR.is_dir():
     app.mount(
-        "/sunu-clean/assets",
+        "/amal/assets",
         StaticFiles(directory=VITRINE_DIR / "assets"),
-        name="sunu-clean-assets",
+        name="amal-assets",
     )
 
-    @app.get("/sunu-clean")
-    def sunu_clean_redirect():
+    @app.get("/amal")
+    def amal_redirect():
         # Redirection vers la version avec slash pour que les chemins relatifs
         # (assets/css/style.css) soient résolus correctement.
-        return RedirectResponse(url="/sunu-clean/", status_code=307)
+        return RedirectResponse(url="/amal/", status_code=307)
 
-    @app.get("/sunu-clean/", response_class=HTMLResponse)
-    def sunu_clean_home():
+    @app.get("/amal/", response_class=HTMLResponse)
+    def amal_home():
         return (VITRINE_DIR / "index.html").read_text(encoding="utf-8")
 
 

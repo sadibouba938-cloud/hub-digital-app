@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Sunu Clean Sénégal — Interactions du site vitrine
+   AMAL — Détergents du Sénégal · Interactions du site vitrine
    Menu, filtres produits, FAQ, compteurs, animations, formulaire de devis
    ========================================================================== */
 (function () {
@@ -10,7 +10,7 @@
      sans « + », sans espaces ni tirets)
      --------------------------------------------------------------------- */
   var WHATSAPP_NUMBER = "221771234567";
-  var COMPANY_EMAIL = "contact@sunuclean.sn";
+  var COMPANY_EMAIL = "contact@amal-detergents.sn";
 
   var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
@@ -301,7 +301,7 @@
       var message = ($("#message") || {}).value || "";
 
       var lines = [
-        "Bonjour Sunu Clean Sénégal,",
+        "Bonjour AMAL — Détergents du Sénégal,",
         "",
         "Je souhaite recevoir un devis :",
         "• Nom : " + nom,

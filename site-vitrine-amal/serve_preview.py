@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serveur de prévisualisation du site vitrine Sunu Clean Sénégal.
+"""Serveur de prévisualisation du site vitrine AMAL — Détergents du Sénégal.
 
 Usage :
     python3 serve_preview.py            # http://0.0.0.0:8000
@@ -32,7 +32,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(("0.0.0.0", PORT), partial(Handler, directory=DIRECTORY)) as httpd:
-    print(f"🚀  Sunu Clean — site vitrine servi sur http://0.0.0.0:{PORT}")
+    print(f"🚀  AMAL — site vitrine servi sur http://0.0.0.0:{PORT}")
     print(f"    Dossier : {DIRECTORY}")
     try:
         httpd.serve_forever()
