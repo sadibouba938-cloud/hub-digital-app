@@ -19,6 +19,7 @@ backend/
     ├── taches.html      # tableau de bord
     ├── chat.css / chat.js
     └── assets/          # css + js + i18n
+site-vitrine-amal/       # site vitrine client AMAL (détergents) — cf. son README
 ```
 
 ---
@@ -66,6 +67,7 @@ ont besoin du backend Python (Options A ou B).
 | `/webhooks/meta` | Webhook officiel Graph (leads + Messenger) |
 | `/webhooks/chariow` | Pulse Chariow `sale.completed` |
 | `/boutique/produits` | Produits Chariow (proxy API) |
+| `/amal/` | **Site vitrine client « AMAL »** (fabricant de détergents, Sénégal) |
 | `/api/chat` | Chat « Hub Digital IA » |
 | `/health` | État du serveur |
 | `/docs` | Documentation API (Swagger) |

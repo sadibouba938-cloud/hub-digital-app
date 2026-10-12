@@ -9,7 +9,7 @@ import urllib.request
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -110,6 +110,44 @@ class InboxReply(BaseModel):
 
 # ---------- Site vitrine Hub Digital (fusionné) ----------
 app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
+
+# ---------- Site vitrine client : AMAL (fabricant de détergents, Sénégal) ----------
+VITRINE_DIR = Path(__file__).resolve().parent / "site-vitrine-amal"
+
+if VITRINE_DIR.is_dir():
+    app.mount(
+        "/amal/assets",
+        StaticFiles(directory=VITRINE_DIR / "assets"),
+        name="amal-assets",
+    )
+
+    @app.get("/amal")
+    def amal_redirect():
+        # Redirection vers la version avec slash pour que les chemins relatifs
+        # (assets/css/style.css) soient résolus correctement.
+        return RedirectResponse(url="/amal/", status_code=307)
+
+    @app.get("/amal/", response_class=HTMLResponse)
+    def amal_home():
+        return (VITRINE_DIR / "index.html").read_text(encoding="utf-8")
+
+    # Versions anglaise et wolof : le français reste la version de référence,
+    # ces adresses ouvrent la même page avec la langue pré-sélectionnée.
+    @app.get("/amal/en")
+    def amal_en_redirect():
+        return RedirectResponse(url="/amal/en/", status_code=307)
+
+    @app.get("/amal/wo")
+    def amal_wo_redirect():
+        return RedirectResponse(url="/amal/wo/", status_code=307)
+
+    @app.get("/amal/en/", response_class=HTMLResponse)
+    def amal_en():
+        return (VITRINE_DIR / "en" / "index.html").read_text(encoding="utf-8")
+
+    @app.get("/amal/wo/", response_class=HTMLResponse)
+    def amal_wo():
+        return (VITRINE_DIR / "wo" / "index.html").read_text(encoding="utf-8")
 
 
 @app.get("/", response_class=HTMLResponse)
