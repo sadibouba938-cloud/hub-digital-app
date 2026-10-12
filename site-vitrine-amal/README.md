@@ -100,12 +100,19 @@ légèrement et pivote**, avec une pastille « Rendu 3D » dans le coin.
 
 ```
 site-vitrine-amal/
-├── index.html                  # page unique complète
+├── index.html                  # page unique complète (contenu français de référence)
+├── en/index.html               # entrée « version anglaise » → index.html?lang=en
+├── wo/index.html               # entrée « version wolof » → index.html?lang=wo
 ├── serve_preview.py            # serveur local de prévisualisation (Python standard)
-├── README.md
+├── tools/
+│   ├── i18n_build.py           # génère i18n-data.js + la table de référence
+│   ├── i18n_test.js            # tests du moteur de langue (jsdom, optionnel)
+│   └── i18n/                   # traductions à saisir + table de relecture
 └── assets/
     ├── css/style.css           # charte AMAL complète + scènes 3D + responsive
     ├── js/main.js              # menu, filtres, FAQ, compteurs, formulaire de devis
+    ├── js/i18n-data.js         # dictionnaire FR → EN / WO (généré, ne pas éditer)
+    ├── js/i18n.js              # moteur de langue + sélecteur FR / EN / WO
     └── img/
         ├── hero-atelier.jpg            # assemblage : usine + gamme AMAL (héro)
         ├── showcase-gamme-usine.jpg     # gamme AMAL dans l'atelier
@@ -132,7 +139,9 @@ Un double-clic sur `index.html` fonctionne également.
 | Route | Contenu |
 |---|---|
 | `/amal` | redirection (307) vers `/amal/` |
-| `/amal/` | page d'accueil du site vitrine AMAL |
+| `/amal/` | page d'accueil du site vitrine AMAL (français) |
+| `/amal/en/` | version anglaise (même page, langue pré-sélectionnée) |
+| `/amal/wo/` | version wolof (même page, langue pré-sélectionnée) |
 | `/amal/assets/…` | styles, scripts et images |
 
 ### Mise en ligne définitive
@@ -140,6 +149,48 @@ Un double-clic sur `index.html` fonctionne également.
 Déposez le dossier `site-vitrine-amal/` tel quel chez un hébergeur statique
 (**Netlify, Vercel, GitHub Pages, Cloudflare Pages, Hostinger, o2switch, cPanel**…).
 Aucune base de données ni serveur applicatif n'est nécessaire.
+
+---
+
+## 🌍 Versions anglaise et wolof
+
+Le **français est la langue de référence** : le texte vit dans `index.html`, et les
+versions EN / WO sont produites à partir de celui-ci. Aucune page n'est dupliquée —
+le visiteur change de langue sans recharger, depuis le sélecteur **FR · EN · WO** du
+bandeau supérieur.
+
+| Adresse | Résultat |
+|---|---|
+| `index.html` | site en français |
+| `index.html?lang=en` | site en anglais (lien partageable) |
+| `index.html?lang=wo` | site en wolof (lien partageable) |
+| `en/` · `wo/` | pages d'entrée rapides vers les liens ci-dessus |
+
+Le choix est mémorisé dans le navigateur (`localStorage`), l'attribut `lang` de la
+page et les métadonnées (`title`, `description`) suivent la langue, et un bandeau
+discret rappelle que la version française fait foi.
+
+### Corriger ou compléter une traduction
+
+1. Ouvrir `tools/i18n/translations-en.txt` ou `tools/i18n/translations-wo.txt` :
+   une ligne = un texte, sous la forme `numéro|traduction` (le numéro correspond à
+   la ligne du même numéro dans `tools/i18n/reference.md`, la table FR / EN / WO).
+2. Laisser la ligne **vide** pour un nom propre, un numéro de téléphone ou une
+   unité (le français s'affiche alors tel quel) — `-` signifie « identique au français ».
+3. Régénérer le dictionnaire :
+
+```bash
+cd site-vitrine-amal
+python3 tools/i18n_build.py            # régénère assets/js/i18n-data.js
+python3 tools/i18n_build.py --check    # contrôle : renvoie 1 si le fichier n'est pas à jour
+python3 tools/i18n_build.py --dump     # affiche la liste française numérotée
+node tools/i18n_test.js                # tests du sélecteur (nécessite jsdom)
+```
+
+Si un texte est ajouté ou déplacé dans `index.html`, la numérotation change :
+le script **s'arrête** et indique les index concernés plutôt que d'associer une
+traduction au mauvais texte. On réaligne alors les fichiers de traduction, puis on
+relance avec `--accept`.
 
 ---
 
@@ -197,6 +248,7 @@ témoignages et rendus 3D sont des exemples à valider avec l'entreprise.
 - 14 références d'assets : toutes présentes, aucune image orpheline.
 - Aucune mention de l'ancienne marque, aucun prix fictif résiduel.
 - Formulaire validé en direct (nom, téléphone ≥ 9 chiffres, ville, type de demande, e-mail, consentement).
-- Rendu servi en HTTP 200 par le serveur de prévisualisation **et** par FastAPI (`/amal/`, `/amal/assets/…`).
+- Rendu servi en HTTP 200 par le serveur de prévisualisation **et** par FastAPI (`/amal/`, `/amal/en/`, `/amal/wo/`, `/amal/assets/…`).
+- Multilingue : `node tools/i18n_test.js` → 29 contrôles (bascule FR → EN → WO → FR, bandeau, lien partagé, restauration exacte du français).
 - Accessibilité : navigation clavier, `aria-*` sur le menu et la FAQ, contrastes respectés.
 - `prefers-reduced-motion` : animations désactivées si le visiteur le demande.

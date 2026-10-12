@@ -131,6 +131,24 @@ if VITRINE_DIR.is_dir():
     def amal_home():
         return (VITRINE_DIR / "index.html").read_text(encoding="utf-8")
 
+    # Versions anglaise et wolof : le français reste la version de référence,
+    # ces adresses ouvrent la même page avec la langue pré-sélectionnée.
+    @app.get("/amal/en")
+    def amal_en_redirect():
+        return RedirectResponse(url="/amal/en/", status_code=307)
+
+    @app.get("/amal/wo")
+    def amal_wo_redirect():
+        return RedirectResponse(url="/amal/wo/", status_code=307)
+
+    @app.get("/amal/en/", response_class=HTMLResponse)
+    def amal_en():
+        return (VITRINE_DIR / "en" / "index.html").read_text(encoding="utf-8")
+
+    @app.get("/amal/wo/", response_class=HTMLResponse)
+    def amal_wo():
+        return (VITRINE_DIR / "wo" / "index.html").read_text(encoding="utf-8")
+
 
 @app.get("/", response_class=HTMLResponse)
 def home():

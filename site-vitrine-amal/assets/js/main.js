@@ -12,6 +12,11 @@
   var WHATSAPP_NUMBER = "221771234567";
   var COMPANY_EMAIL = "contact@amal-detergents.sn";
 
+  /* Traduit un texte français selon la langue choisie (voir assets/js/i18n.js) */
+  var T = function (frenchText) {
+    return typeof window.AMAL_T === "function" ? window.AMAL_T(frenchText) : frenchText;
+  };
+
   var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
@@ -207,7 +212,7 @@
     var linkStyle = "color:var(--green-800);font-weight:700";
 
     target.appendChild(document.createTextNode(
-      "Nous ouvrons WhatsApp avec le récapitulatif de votre demande "
+      T("Nous ouvrons WhatsApp avec le récapitulatif de votre demande") + " "
     ));
 
     var wa = document.createElement("a");
@@ -215,17 +220,17 @@
     wa.target = "_blank";
     wa.rel = "noopener";
     wa.setAttribute("style", linkStyle);
-    wa.textContent = "(cliquez ici si rien ne s'ouvre)";
+    wa.textContent = T("(cliquez ici si rien ne s'ouvre)");
     target.appendChild(wa);
 
     target.appendChild(document.createTextNode("."));
     target.appendChild(document.createElement("br"));
-    target.appendChild(document.createTextNode("Vous préférez l'e-mail ? "));
+    target.appendChild(document.createTextNode(T("Vous préférez l'e-mail ?") + " "));
 
     var mail = document.createElement("a");
     mail.href = mailUrl;
     mail.setAttribute("style", linkStyle);
-    mail.textContent = "Envoyez votre demande par e-mail";
+    mail.textContent = T("Envoyez votre demande par e-mail");
     target.appendChild(mail);
     target.appendChild(document.createTextNode("."));
   }
